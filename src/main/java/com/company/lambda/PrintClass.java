@@ -10,11 +10,17 @@ public class PrintClass {
         public boolean checkPeople(People p);
     }
 
-    public static void printPeople(List<People> peoples,Trigger trigger) {
+    public static void printPeople(List<People> peoples, Trigger trigger) {
         for (int i = 0; i < peoples.size() ; i++) {
             if(trigger.checkPeople(peoples.get(i))) {
                 System.out.println(peoples.get(i).name);
             }
         }
+    }
+
+    public static boolean even(People p) {
+        if(p.id % 2 ==0)
+             return true;
+        return false;
     }
 }
