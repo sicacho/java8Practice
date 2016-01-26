@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
         List<People> peoples = new ArrayList<People>();
-
+        Optional<People> optional = Optional.of(null);
+        System.out.println();
         for(int i = 0 ; i < 100 ; i++) {
             peoples.add(new People(i,"khang"+i));
         }
