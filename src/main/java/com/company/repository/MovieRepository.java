@@ -38,5 +38,8 @@ public interface MovieRepository extends BaseRepository<Movie> {
     @Query("MATCH (a:Actor)-[:ACTED_IN]->(n:Movie) where (id(a)={0}) return count(n)")
     public Long findMovieByActorCount(Long id);
 
+    @Query("MATCH(n:Movie) where upper(n.code) = {0} return n")
+    public Iterable<Movie> findMovieByCode(String code);
+
 
 }

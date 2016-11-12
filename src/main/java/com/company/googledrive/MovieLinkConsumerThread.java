@@ -36,7 +36,7 @@ public class MovieLinkConsumerThread implements Runnable {
                 if(link!=null) {
                     System.out.println("Thread "+ Thread.currentThread().getName() +" is running with Parse Link = " + link);
                     MovieDTO movieDTO = MovieParser.getMovieFromDetailLink(link);
-                    movieVideoURLs.stream().forEach(movieHasVideo -> {if(movieHasVideo.name.equals(movieDTO.name)){
+                    movieVideoURLs.stream().forEach(movieHasVideo -> {if(movieHasVideo.name.toUpperCase().equals(movieDTO.name.toUpperCase())){
                         movieDTO.googleId = movieHasVideo.googleId;
                     }});
                     movieDTOList.add(movieDTO);

@@ -13,6 +13,7 @@ public class MovieDTO implements Comparable {
     public List<String> types;
     public List<String> actors;
     public String image;
+    public String studio;
 
     public MovieDTO() {
     }
@@ -31,5 +32,13 @@ public class MovieDTO implements Comparable {
     @Override
     public boolean equals(Object obj) {
         return this.name.equals(((MovieDTO)obj).name);
+    }
+
+    @Override
+    public String toString() {
+        return "MovieDTO{" +
+                "name='" + name + '\'' +
+                ", googleId='" + googleId + '\'' +
+                '}';
     }
 }
