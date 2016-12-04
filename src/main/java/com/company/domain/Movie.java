@@ -39,6 +39,9 @@ public class Movie {
     @Property(name = "detail")
     private String detail;
 
+    @Property(name = "isHD")
+    private Boolean isHD;
+
     @Relationship(type = "ACTED_IN",direction = Relationship.INCOMING)
     private List<Actor> actors;
 
@@ -223,5 +226,14 @@ public class Movie {
         this.seoName = seoName;
     }
 
+    public boolean isHD() {
+        if(isHD==null) {
+            isHD=false;
+        }
+        return isHD;
+    }
 
+    public void setHD(boolean HD) {
+        isHD = HD;
+    }
 }

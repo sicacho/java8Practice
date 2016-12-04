@@ -80,7 +80,7 @@ public class JsonConverter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return commentDTOs;
+        return commentDTOs.stream().distinct().collect(Collectors.toList());
 
     }
 

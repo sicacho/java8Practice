@@ -38,6 +38,7 @@ public class MovieLinkConsumerThread implements Runnable {
                     MovieDTO movieDTO = MovieParser.getMovieFromDetailLink(link);
                     movieVideoURLs.stream().forEach(movieHasVideo -> {if(movieHasVideo.name.toUpperCase().equals(movieDTO.name.toUpperCase())){
                         movieDTO.googleId = movieHasVideo.googleId;
+                        movieDTO.isHD = movieHasVideo.isHD;
                     }});
                     movieDTOList.add(movieDTO);
                     System.out.println("Movie Size " + movieDTOList.size());

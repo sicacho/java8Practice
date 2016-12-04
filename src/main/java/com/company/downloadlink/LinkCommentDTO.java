@@ -12,4 +12,20 @@ public class LinkCommentDTO {
     public List<String> uploaded_net;
     public List<String> rapidgator_net;
     public Integer numberWantIt = 0;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LinkCommentDTO that = (LinkCommentDTO) o;
+
+        return code_video.equals(that.code_video);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return code_video.hashCode();
+    }
 }

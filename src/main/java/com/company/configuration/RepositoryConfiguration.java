@@ -25,7 +25,7 @@ public class RepositoryConfiguration extends Neo4jConfiguration{
 
     @Override
     public SessionFactory getSessionFactory() {
-        return new SessionFactory("com.company.domain");
+        return new SessionFactory("com.company.domain", "BOOT-INF.classes.com.company.domain");
     }
 
     @Override

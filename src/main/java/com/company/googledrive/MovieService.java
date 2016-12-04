@@ -72,6 +72,7 @@ public class MovieService {
                 movie.setStudio(studio);
                 movie.setViews(0);
                 movie.setCreateDate((new Date()).getTime());
+                movie.setHD(movieDTO.isHD);
                 Movie movieAfterSave = movieRepository.save(movie);
                 System.out.println("Insert Movie : " + movieAfterSave.getId());
 
@@ -104,17 +105,20 @@ public class MovieService {
     private List<Type> getListTypeFromName(List<String> typesName) {
         List<Type> types = new ArrayList<>();
         for (String s : typesName) {
-            Iterable<Type> typeDBs = typeRepository.getTypeByName(s.toUpperCase());
+            String name = s;
+            name = name.replace("."," ");
+            name = name.replace("/"," ");
+            name = name.trim().replaceAll("\\s{2,}", " ");;
+            Iterable<Type> typeDBs = typeRepository.getTypeByName(name.toUpperCase());
             Type type =null;
             if(typeDBs.iterator().hasNext()) {
                  type = typeDBs.iterator().next();
             }
             if(type==null) {
                 type = new Type();
-                String name = s;
-                name = name.replaceAll("."," ");
-                name = name.replaceAll("//"," ");
-                name = name.trim();
+                name = name.replace("."," ");
+                name = name.replace("/"," ");
+                name = name.trim().replaceAll("\\s{2,}", " ");;
                 type.setName(name);
                 type.getSeoName();
                 typeRepository.save(type);
@@ -141,5 +145,30 @@ public class MovieService {
             movie.setUrlVideos(urlList.toArray(urlNew));
         }
         movieRepository.save(movie);
+    }
+
+    @Transactional
+    public void updateResolutions(HashMap<String,Integer> videosResolutions) {
+        videosResolutions.forEach((s, integer) -> updateResolutions(s,integer));
+    }
+
+    private void updateResolutions(String code,Integer resolution) {
+        Movie movie =null;
+        Iterable<Movie> movieIterator = movieRepository.findMovieByCode(code.toUpperCase());
+        if(movieIterator.iterator().hasNext()){
+            movie  = movieIterator.iterator().next();
+                if(resolution > 480) {
+                    movie.setHD(true);
+                } else {
+                    movie.setHD(false);
+                }
+
+        } else {
+            System.out.println(code);
+        }
+        if(movie!=null) {
+            movieRepository.save(movie);
+        }
+
     }
 }

@@ -4,6 +4,7 @@ import com.company.configuration.RepositoryConfiguration;
 import com.company.domain.Movie;
 import com.company.googledrive.MovieService;
 import com.company.repository.MovieRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,20 +33,20 @@ public class MovieAnalyser {
     public static int movieCounter = 0;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String pageLink = "http://www.javlibrary.com/en/vl_genre.php?&mode=&g=aroa&page=";
         List<LinkCommentDTO> linkCommentDTOs = getCommentDTOsFromUrls(pageLink);
-        ApplicationContext ctx = null;
-        ctx = new SpringApplicationBuilder().sources(MovieAnalyser.class).web(false).run(args);
-        MovieRepository movieRepository = (MovieRepository) ctx.getBean("movieRepository");
-        Iterable<Movie> movies = movieRepository.findAll();
-        List<String> existMovie = getCodes(movies);
+//        ApplicationContext ctx = null;
+//        ctx = new SpringApplicationBuilder().sources(MovieAnalyser.class).web(false).run(args);
+//        MovieRepository movieRepository = (MovieRepository) ctx.getBean("movieRepository");
+//        Iterable<Movie> movies = movieRepository.findAll();
+        ObjectMapper mapper = new ObjectMapper();
+        List<String> existMovie = mapper.readValue(new File("C:\\exitsMovie.json"), new TypeReference<List<String>>(){});
         linkCommentDTOs = linkCommentDTOs.stream()
                 .filter(linkCommentDTO -> existMovie
                                         .stream()
                                         .noneMatch(s -> s.toUpperCase().equals(linkCommentDTO.code_video)))
                 .collect(Collectors.toList());
-        ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File("C:\\linklist_drama.json"), linkCommentDTOs);
         } catch (IOException e) {

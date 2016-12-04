@@ -39,7 +39,7 @@ public class Main {
     public static void main(String[] args) {
 //        System.out.println(JsonConverter.getData().size());
         List<MovieDTO> movieDTOs = null;
-        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVVmg3MlNaeUgweTg");
+        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVaU9qZzExUGNnS1k");
         ApplicationContext ctx = null;
         ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
         MovieService movieService = (MovieService) ctx.getBean("movieService");
@@ -60,7 +60,7 @@ public class Main {
             service = DriveQuickstart.getDriveService();
             result = service.files().list().setQ("'"+ folderId +"' in parents")
                     .setPageSize(1000)
-                    .setFields("nextPageToken, files(id, name)")
+                    .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
                     .execute();
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,6 +85,7 @@ public class Main {
                     fileName = fileName.replace("%","");
                     movieDTO.name = fileName;
                     movieDTO.googleId = file.getId();
+                    movieDTO.isHD = file.getVideoMediaMetadata().getHeight() > 480 ? true : false;
                     movieDTOs.add(movieDTO);
                 }
 
