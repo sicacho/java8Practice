@@ -6,9 +6,9 @@ import org.junit.Test;
  */
 public class TestRenderVTT {
 
-  @Test
-  public void testRenderSuccessful() {
-    ThumbnailExtractor thumbnailExtractor = new ThumbnailExtractor();
-    thumbnailExtractor.renderVTTFile("avb","thumnailaaa",2160,480,4383);
-  }
+//  @Test
+//  public void testRenderSuccessful() {
+//    ThumbnailExtractor thumbnailExtractor = new ThumbnailExtractor();
+//    thumbnailExtractor.renderVTTFile("avb","thumnailaaa",2160,480,4383);
+//  }
 }

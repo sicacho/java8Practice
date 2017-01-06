@@ -10,6 +10,7 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -19,15 +20,15 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 @SpringBootApplication
@@ -68,8 +69,7 @@ public class DriveQuickstart {
    * If modifying these scopes, delete your previously saved credentials
    * at ~/.credentials/drive-java-quickstart
    */
-  private static final List<String> SCOPES =
-      Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
+  private static final Set<String> SCOPES = DriveScopes.all();
 
   static {
     try {
@@ -108,6 +108,18 @@ public class DriveQuickstart {
     return credential;
   }
 
+  public static Credential authorizeService() throws GeneralSecurityException, IOException {
+    GoogleCredential credential = new GoogleCredential.Builder()
+            .setTransport(HTTP_TRANSPORT)
+            .setJsonFactory(JSON_FACTORY)
+            .setServiceAccountId("videoservice@iconic-elevator-127003.iam.gserviceaccount.com")
+            .setServiceAccountPrivateKeyFromP12File(new java.io.File("D:\\java8Practice\\src\\main\\resources\\My Project-8b495f334408.p12"))
+            .setServiceAccountScopes(SCOPES)
+            .setServiceAccountUser("trustme013@gmail.com")
+            .build();
+    return credential;
+  }
+
   /**
    * Build and return an authorized Drive client service.
    *
@@ -118,7 +130,7 @@ public class DriveQuickstart {
     Credential credential = authorize();
     return new Drive.Builder(
         HTTP_TRANSPORT, JSON_FACTORY, credential)
-        .setApplicationName(APPLICATION_NAME)
+        .setApplicationName("testapp")
         .build();
   }
 
