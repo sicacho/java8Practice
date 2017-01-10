@@ -70,7 +70,7 @@ public class DriveQuickstart {
    * at ~/.credentials/drive-java-quickstart
    */
   private static final Set<String> SCOPES = DriveScopes.all();
-
+  private static final List<String> FullScope = new ArrayList<>();
   static {
     try {
       HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -93,16 +93,16 @@ public class DriveQuickstart {
         DriveQuickstart.class.getResourceAsStream("/client_secret.json");
     GoogleClientSecrets clientSecrets =
         GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
+    FullScope.add(DriveScopes.DRIVE);
     // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(
-            HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+            HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, FullScope)
             .setDataStoreFactory(DATA_STORE_FACTORY)
-            .setAccessType("offline")
+            .setAccessType("offline").setApprovalPrompt("consent")
             .build();
     Credential credential = new AuthorizationCodeInstalledApp(
-        flow, new LocalServerReceiver()).authorize("user");
+        flow, new LocalServerReceiver()).authorize("834766686975");
     System.out.println(
         "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
     return credential;

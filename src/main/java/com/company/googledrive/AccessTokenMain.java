@@ -8,8 +8,10 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.StringTokenizer;
 
@@ -20,18 +22,25 @@ public class AccessTokenMain {
   public static void main(String[] args) {
     try {
 
+      System.out.println(System.getProperty("user.home"));
       Credential credential = DriveQuickstart.authorize();
       String at = credential.getAccessToken();
       System.out.println(at);
 //      Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), credential).setApplicationName("app1").build();
       Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
-              .setHttpRequestInitializer(credential).setApplicationName("isentropic-tape-142809").build();
+              .setHttpRequestInitializer(credential).setApplicationName("834766686975").build();
       String content = "";
+      OutputStream outputStream = new ByteArrayOutputStream();
       String fileId = "0B6iOGhAfgoxVSE5qWEo1QW1sakk"; //Your video docid in Google Drive
       HttpResponse resp = service.getRequestFactory()
-              .buildGetRequest(new GenericUrl("https://docs.google.com/get_video_info?authuser=&app=scaca&access_token="+ at+"&docid=" + fileId)).execute();
+              .buildGetRequest(new GenericUrl("https://docs.google.com/get_video_info?"+"&docid=" + fileId)).execute();
+//              .buildGetRequest(new GenericUrl("https://www.googleapis.com/drive/v3/files/0B6iOGhAfgoxVSE5qWEo1QW1sakk?alt=media")).execute();
+//      System.out.println(resp.getStatusCode());
       Drive.Files.Get response = service.files().get(fileId);
-      System.out.println(response);
+//      service.files().get(fileId)
+//              .executeMediaAndDownloadTo(outputStream);
+      System.out.println(response.executeMedia().getRequest().getUrl().toString());
+//      service.getRequestFactory().buildGetRequest(new GenericUrl("https://www.googleapis.com/drive/v3/files/0B6iOGhAfgoxVSE5qWEo1QW1sakk?alt=media")).execute();
       InputStreamReader isr = new InputStreamReader(resp.getContent());
       int ch = 0;
       while (ch != -1) {
