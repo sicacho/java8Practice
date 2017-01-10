@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "iconic-elevator-127003",
+  "private_key_id": "1fe5b8c5d4b0fdee45c33478696a4e251383fe22",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDkh2x7eRH3p/gS\nsVq2rf9LbEKprhcb2GIkJQFcMpjG1uZAd5FuKhl9d//mwdl1wUGW+Tcr0A/gOv39\n9NW/3kd/IkO0lkdVYYzXULdeO2zvylTeEFxjy/nIr2twO2jT+06DO5WXKY90VvFa\n6FURdz/28dMbnEnq0lbcHHCEG19FpqvFiQotYVs9r8iErn8+bf7W1vRcNjt8TkCI\nDSSmCZrxo15dppjZdThSf739S3W1NYFE4I9n7L8Rp9rXttPMXMwhb+M+OG1sgjIN\n3Z/NbgsNZxMaZxQnkAS4GKMi5hDdj0xVCdlOSMfUPCZyf4csExO4Iiq9E3gvwHmt\npMckR3ShAgMBAAECggEBANFBl/ov0F3/tk4XjEL+bGg5x4jr2kkrCCKkp+wugGqC\nWO/rDIXdkt2qxe4czuzeexqtNPGvYPonym+Cgz9fYARv8aMogEUUQAzg4ictLwEb\nOj7kqFTRb/Vte2mXXNPOqAPOyZlS+wLCodpmJ48IrM+Ie5AquhyFYffHKtgs4D47\nNkq7yrW//2zXLYz9v1kUCQ3GO2VjxrVx5r6U0vv1+oJRaB4TYA2uF8NCHHSEYORD\nykXIyhN3UDklVqXryWy+3J0WuEzjd96XfGC0ePcg3DoOEoARgWOqkiYyph3M9biz\nPghDobBLpKyLQmKgToRK3nqfNsly96i2D2l65EAgh4ECgYEA/htSBOcilMUN5AVu\nvXNbGcrlK9j4CPMOiOY3Gt55ITLsBC5uhm76Dt/zq6jOUmEZ2JFiU13oqe76rHy7\nrkXdKW2jxaFDODdpNrNJuhJglFyGbWbUgCWnIaKVlVtSOrsu+Cdhy9CDP6xrVn0X\n9uLBzt+tppNot9kvV3ay9d4orDkCgYEA5jtRGLQZXcokyZhg5uutR3ItR6GYMQve\nrt4qxT1GaHVD7kQ6DQCQuXOqVeQ9S9XXZJNdrWbLaAm/hFw3YEp5sQlBe7aWtIU0\n2fnmJXuZ/KnjfGxoam9bdE+aMOdPxVp8jstwQ0J8eA4Vbjevnog50efh1GKv0rVv\nOAHQqeLh26kCgYAR5MyeycP2o/W5c+R7dM8aft4qe0nkH3GLlGKXAsmW2+Yg2UAx\nOUlkmMKo+Ocmh+3xATPiWP+UT97ZHKN+vy62xyC8PwHjyIshLfjoIHkqmWVh+NbH\n+17MkI1mChs9RYcmNGe/mXxUlIiue3qfiRJKxheNXl4GbEXYK+SoSa+liQKBgQCs\n0K+B1IYJ4ZcVf3yVOSh7LZgRYZmkjx1as0b1gJYeCI+yBKJyag84NTsRd94O03f3\ndapmY3ehI1gPmUyzyZNosOLnYtnirO5MBAmd7xZaEofAOHt0ERxbxPifZrF5GP/Q\nC6K7yec2EpRBhCkd3XFRPzZDPsRtbGUMbEhdjQEt6QKBgEt4FsvqFG8wSTyz94/u\n2Z4AvPRevszrYM890S3YNr6IXYrY2lwt8g1ZH4fiQ4RmdfDS4bo9KH0yL4a79GB3\nl0udsKFlIoAnZHHbWGKrtiGDpPAlBvI1ZFe+DBuCmR1VrKXwOjqoezeM528pFJI/\n2p2pODHhwdikhUOpS9JL+ilX\n-----END PRIVATE KEY-----\n",
+  "client_email": "videoservice@iconic-elevator-127003.iam.gserviceaccount.com",
+  "client_id": "110339117144367469903",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/videoservice%40iconic-elevator-127003.iam.gserviceaccount.com"
+}
