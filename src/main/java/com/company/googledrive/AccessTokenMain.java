@@ -31,11 +31,13 @@ public class AccessTokenMain {
               .setHttpRequestInitializer(credential).setApplicationName("834766686975").build();
       String content = "";
       OutputStream outputStream = new ByteArrayOutputStream();
-      String fileId = "0B6iOGhAfgoxVSE5qWEo1QW1sakk"; //Your video docid in Google Drive
+      String fileId = "0B3YJQgQ5nWc3VkJJN0NUV2tHcU0"; //Your video docid in Google Drive
       HttpResponse resp = service.getRequestFactory()
-              .buildGetRequest(new GenericUrl("https://docs.google.com/get_video_info?"+"&docid=" + fileId)).execute();
+//              .buildGetRequest(new GenericUrl("https://docs.google.com/get_video_info?"+"&docid=" + fileId)).execute();
+              .buildGetRequest(new GenericUrl("https://r3---sn-a5mlrn76.googlevideo.com/videoplayback?id=50a1dde8a87a3ff1&itag=18&source=webdrive&requiressl=yes&ttl=transient&mm=31&mn=sn-a5mlrn76&ms=au&mv=m&nh=IgpwcjAyLmxheDAyKhkyMDAxOjQ4NjA6MToxOjA6MWIxYjowOjFh&pl=49&mime=video/mp4&lmt=1483077297437777&mt=1484273750&ip=2400:8901::f03c:91ff:fee2:a636&ipbits=24&expire=1484288285&sparams=ip%2Cipbits%2Cexpire%2Cid%2Citag%2Csource%2Crequiressl%2Cttl%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Cmime%2Clmt&signature=A3E77D8617D532CC2409E9C10372850C981CA992.23E42FA9132D31B76CF678588BE079A65968E1DD&key=ck2&app=explorer")).execute();
 //              .buildGetRequest(new GenericUrl("https://www.googleapis.com/drive/v3/files/0B6iOGhAfgoxVSE5qWEo1QW1sakk?alt=media")).execute();
 //      System.out.println(resp.getStatusCode());
+      System.out.println(resp.getStatusCode());
       Drive.Files.Get response = service.files().get(fileId);
 //      service.files().get(fileId)
 //              .executeMediaAndDownloadTo(outputStream);
