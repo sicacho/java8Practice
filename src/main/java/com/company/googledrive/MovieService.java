@@ -1,5 +1,7 @@
 package com.company.googledrive;
 
+import com.company.configuration.Constant;
+import com.company.configuration.Pagination;
 import com.company.domain.Actor;
 import com.company.domain.Movie;
 import com.company.domain.Studio;
@@ -9,6 +11,7 @@ import com.company.repository.MovieRepository;
 import com.company.repository.StudioRepository;
 import com.company.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -170,5 +173,36 @@ public class MovieService {
             movieRepository.save(movie);
         }
 
+    }
+
+    public Iterable<Movie> getMovies(Integer page,Integer length,String sortBy) {
+        if(null==page || page < 1) {
+            page = 1;
+        }
+        if(length==null) {
+            length = Constant.PAGE_SIZE;
+        }
+        Sort sortId = new Sort(Sort.Direction.DESC,buildSortByForSpringQuery(sortBy));
+        return movieRepository.findAll(new Pagination().page(page-1).have(length).sortBy(sortId),0);
+    }
+
+    public String buildSortByForSpringQuery(String sortBy) {
+        if(null==sortBy) {
+            return "create_date";
+        }
+        if(sortBy.equals("date")) {
+            sortBy = "create_date";
+        } else if(sortBy.equals("view")) {
+            sortBy = "views";
+        } else if(sortBy.equals("name")) {
+            sortBy = "name";
+        } else {
+            sortBy = "create_date";
+        }
+        return sortBy;
+    }
+
+    public void updateMovie(Movie movie) {
+        movieRepository.save(movie);
     }
 }

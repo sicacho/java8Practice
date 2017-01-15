@@ -50,6 +50,21 @@ public class Movie {
 
     private String seoName;
 
+    @Property(name = "copyOriginalLink")
+    private String copyLinkOriginal;
+
+    @Property(name = "copy360Link")
+    private String copy360Link;
+
+    @Property(name = "copy480Link")
+    private String copy480Link;
+
+    @Property(name = "copy720Link")
+    private String copy720Link;
+
+    @Property(name = "copy1080Link")
+    private String copy1080Link;
+
 //    @Transient
 //    private int value;
 //
@@ -235,5 +250,45 @@ public class Movie {
 
     public void setHD(boolean HD) {
         isHD = HD;
+    }
+
+    public String getCopyLinkOriginal() {
+        return copyLinkOriginal;
+    }
+
+    public void setCopyLinkOriginal(String copyLinkOriginal) {
+        this.copyLinkOriginal = copyLinkOriginal;
+    }
+
+    public String getCopy360Link() {
+        return copy360Link;
+    }
+
+    public void setCopy360Link(String copy360Link) {
+        this.copy360Link = copy360Link;
+    }
+
+    public String getCopy480Link() {
+        return copy480Link;
+    }
+
+    public void setCopy480Link(String copy480Link) {
+        this.copy480Link = copy480Link;
+    }
+
+    public String getCopy720Link() {
+        return copy720Link;
+    }
+
+    public void setCopy720Link(String copy720Link) {
+        this.copy720Link = copy720Link;
+    }
+
+    public String getCopy1080Link() {
+        return copy1080Link;
+    }
+
+    public void setCopy1080Link(String copy1080Link) {
+        this.copy1080Link = copy1080Link;
     }
 }

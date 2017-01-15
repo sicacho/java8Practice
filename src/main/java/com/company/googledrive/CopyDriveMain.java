@@ -1,5 +1,7 @@
 package com.company.googledrive;
 
+import com.company.configuration.RepositoryConfiguration;
+import com.company.domain.Movie;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -14,6 +16,13 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.Permission;
+import com.google.api.services.drive.model.PermissionList;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +35,9 @@ import java.util.Set;
 /**
  * Created by tnkhang on 1/13/2017.
  */
+@SpringBootApplication
+@ComponentScan
+@Import({RepositoryConfiguration.class})
 public class CopyDriveMain {
   private static final java.io.File DATA_STORE_DIR = new java.io.File(
           System.getProperty("user.home"), ".credentials/drive-java-quickstart");
@@ -92,15 +104,37 @@ public class CopyDriveMain {
   }
 
   public static void main(String[] args) {
+    int flag = 0;
     try {
       Credential credential = authorize();
       Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
               .setHttpRequestInitializer(credential).setApplicationName("432161060989").build();
-      File file = new File();
-      file.setParents(Arrays.asList("0B28pDkSFd-VZaTZFREZhTmZDRWs"));
-      file.setMimeType("image/png");
-      service.files().copy("0B3YJQgQ5nWc3VkJJN0NUV2tHcU0",file).execute();
+      ApplicationContext ctx = null;
+      ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
+      MovieService movieService = (MovieService) ctx.getBean("movieService");
+      Permission permission = new Permission();
+      permission.setType("anyone");
+      permission.setRole("reader");
+      List<Permission> permissions = Arrays.asList(permission);
+      for (int i = 1; i < 113; i++) {
+        flag = i;
+        Iterable<Movie> movies = movieService.getMovies(i,null,null);
+        for (Movie movie : movies) {
+          String id = movie.getUrlVideos()[0].replace("https://drive.google.com/open?id=","");
+          System.out.println(id);
+          File file = new File();
+          file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
+          file.setMimeType("image/png");
+          File fileCopy = service.files().copy(id,file).execute();
+          movie.setCopyLinkOriginal(fileCopy.getId()+"|"+"orginal");
+          movieService.updateMovie(movie);
+          service.permissions().create(fileCopy.getId(),permission).execute();
+          System.out.println(movie.getCode());
+        }
+      }
+
     } catch (Exception e) {
+      System.out.println(flag);
       e.printStackTrace();
     }
   }
