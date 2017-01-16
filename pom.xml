@@ -14,7 +14,7 @@
             <artifactId>spring-boot-maven-plugin</artifactId>
             <configuration>
                 <fork>true</fork>
-                <mainClass>com.company.googledrive.AccessTokenMain</mainClass>
+                <mainClass>com.company.googledrive.CopyDriveMain</mainClass>
             </configuration>
             <executions>
                 <execution>
@@ -33,18 +33,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.company.downloadlink.MovieAnalyser</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
     <parent>

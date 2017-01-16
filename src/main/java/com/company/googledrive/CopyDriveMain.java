@@ -40,7 +40,7 @@ import java.util.Set;
 @Import({RepositoryConfiguration.class})
 public class CopyDriveMain {
   private static final java.io.File DATA_STORE_DIR = new java.io.File(
-          System.getProperty("user.home"), ".credentials/drive-java-quickstart");
+          System.getProperty("user.home"), ".credentials/copydrive");
 
   /**
    * Global instance of the {@link FileDataStoreFactory}.
@@ -115,23 +115,35 @@ public class CopyDriveMain {
       Permission permission = new Permission();
       permission.setType("anyone");
       permission.setRole("reader");
-      List<Permission> permissions = Arrays.asList(permission);
-      for (int i = 1; i < 113; i++) {
-        flag = i;
-        Iterable<Movie> movies = movieService.getMovies(i,null,null);
-        for (Movie movie : movies) {
-          String id = movie.getUrlVideos()[0].replace("https://drive.google.com/open?id=","");
-          System.out.println(id);
-          File file = new File();
-          file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
-          file.setMimeType("image/png");
-          File fileCopy = service.files().copy(id,file).execute();
-          movie.setCopyLinkOriginal(fileCopy.getId()+"|"+"orginal");
-          movieService.updateMovie(movie);
-          service.permissions().create(fileCopy.getId(),permission).execute();
-          System.out.println(movie.getCode());
-        }
-      }
+      File file = new File();
+      file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
+      file.setMimeType("image/png");
+      file.setName("testcopy");
+      File fileCopy = service.files().copy("0B6iOGhAfgoxVMEp5SGtaVnpnQ1E",file).execute();
+      service.permissions().create(fileCopy.getId(),permission).execute();
+//      movie.setCopyLinkOriginal(fileCopy.getId()+"|"+"orginal");
+//      movieService.updateMovie(movie);
+//      List<Permission> permissions = Arrays.asList(permission);
+//      for (int i = 60; i < 113; i++) {
+//        flag = i;
+//        Iterable<Movie> movies = movieService.getMovies(i,null,null);
+//        for (Movie movie : movies) {
+//          if(movie.getCopyLinkOriginal()==null) {
+//            String id = movie.getUrlVideos()[0].replace("https://drive.google.com/open?id=","");
+//            System.out.println(id);
+//            System.out.println(movie.getName());
+//            File file = new File();
+//            file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
+//            file.setMimeType("image/png");
+//            File fileCopy = service.files().copy(id,file).execute();
+//            movie.setCopyLinkOriginal(fileCopy.getId()+"|"+"orginal");
+//            movieService.updateMovie(movie);
+//            service.permissions().create(fileCopy.getId(),permission).execute();
+//            System.out.println(movie.getCode());
+//
+//          }
+//        }
+//      }
 
     } catch (Exception e) {
       System.out.println(flag);

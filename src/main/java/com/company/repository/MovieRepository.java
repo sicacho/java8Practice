@@ -41,5 +41,4 @@ public interface MovieRepository extends BaseRepository<Movie> {
     @Query("MATCH(n:Movie) where upper(n.code) = {0} return n")
     public Iterable<Movie> findMovieByCode(String code);
 
-
 }
