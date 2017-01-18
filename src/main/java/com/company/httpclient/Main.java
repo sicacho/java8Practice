@@ -30,6 +30,8 @@ public class Main {
         String url = "http://hitodzuma69.net/tag/censored-hd/page/2/";
 
         try (final WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
+
+
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
             webClient.waitForBackgroundJavaScript(10000);
             webClient.getOptions().setUseInsecureSSL(true);
@@ -40,6 +42,7 @@ public class Main {
             webClient.getOptions().setJavaScriptEnabled(true);
             webClient.getOptions().setRedirectEnabled(true);
             HtmlPage htmlPage = webClient.getPage(url);
+
             // DDOS protection
             try {
                 Thread.sleep(6000);

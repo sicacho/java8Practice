@@ -14,7 +14,7 @@
             <artifactId>spring-boot-maven-plugin</artifactId>
             <configuration>
                 <fork>true</fork>
-                <mainClass>com.company.googledrive.CopyDriveMain</mainClass>
+                <mainClass>com.company.httpclient.TestCookies</mainClass>
             </configuration>
             <executions>
                 <execution>

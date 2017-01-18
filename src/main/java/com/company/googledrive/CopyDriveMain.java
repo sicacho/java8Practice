@@ -18,19 +18,20 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Permission;
 import com.google.api.services.drive.model.PermissionList;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by tnkhang on 1/13/2017.
@@ -112,15 +113,16 @@ public class CopyDriveMain {
       ApplicationContext ctx = null;
       ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
       MovieService movieService = (MovieService) ctx.getBean("movieService");
-      Permission permission = new Permission();
-      permission.setType("anyone");
-      permission.setRole("reader");
-      File file = new File();
-      file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
-      file.setMimeType("image/png");
-      file.setName("testcopy");
-      File fileCopy = service.files().copy("0B6iOGhAfgoxVMEp5SGtaVnpnQ1E",file).execute();
-      service.permissions().create(fileCopy.getId(),permission).execute();
+//      InputStream inputStream = new
+//      Permission permission = new Permission();
+//      permission.setType("anyone");
+//      permission.setRole("reader");
+//      File file = new File();
+//      file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
+//      file.setMimeType("image/png");
+//      file.setName("testcopy");
+//      File fileCopy = service.files().copy("0B6iOGhAfgoxVMEp5SGtaVnpnQ1E",file).execute();
+//      service.permissions().create(fileCopy.getId(),permission).execute();
 //      movie.setCopyLinkOriginal(fileCopy.getId()+"|"+"orginal");
 //      movieService.updateMovie(movie);
 //      List<Permission> permissions = Arrays.asList(permission);
