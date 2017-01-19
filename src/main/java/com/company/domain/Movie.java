@@ -65,76 +65,9 @@ public class Movie {
     @Property(name = "copy1080Link")
     private String copy1080Link;
 
-//    @Transient
-//    private int value;
-//
-//    public Movie() {
-//    }
-//
-//    public Movie(int value) {
-//        this.value = value;
-//        views = 300;
-//        createDate = System.currentTimeMillis();
-//        detail = "This is detail for Movie " + value;
-//        urlVideos = new String[] {"https://drive.google.com/open?id=0B3YJQgQ5nWc3VkJJN0NUV2tHcU0"};
-//        urlImage = "http://dougboy.smugmug.com/Automotive/Dans-S2000/i-kKrHRTj/0/L/IMG4642-L.jpg";
-//    }
-//
-//    public void setDataRandom(Iterable<Studio> studios,Iterable<Type> types,Iterable<Actor> actors) {
-//        if(this.types==null) {
-//            this.types = new ArrayList<>();
-//        }
-//
-//        if(this.actors==null) {
-//            this.actors = new ArrayList<>();
-//        }
-//
-//        int count = 0 ;
-//        Random ran = new Random();
-//        int ranStudio = ran.nextInt(4) + 1;
-//        Iterator<Studio> studioIterator = studios.iterator();
-//        while(studioIterator.hasNext()) {
-//            count++;
-//            if(count==ranStudio) {
-//                studio = studioIterator.next();
-//            } else {
-//                studioIterator.next();
-//            }
-//        }
-//        this.name = "Name of " + studio.getName() + " " + value;
-//        this.code = studio.getName() + " " + value;
-//        count=0;
-//        int ranNumberType = ran.nextInt(5) + 1;
-//        List<Integer> ranTypes = new ArrayList<Integer>();
-//        IntStream.range(1,ranNumberType+1).boxed().forEachOrdered(t -> ranTypes.add(ran.nextInt(38) + 1));
-//        int ranNumberActor = ran.nextInt(4) + 1;
-//        List<Integer> ranActors = new ArrayList<Integer>();
-//        IntStream.range(1,ranNumberActor+1).boxed().forEachOrdered(t -> ranActors.add(ran.nextInt(37) + 1));
-//
-//        Iterator<Type> typeIterator = types.iterator();
-//        while (typeIterator.hasNext()) {
-//            count++;
-//            if(ranActors.contains(count)) {
-//                this.types.add(typeIterator.next());
-//            } else {
-//                typeIterator.next();
-//            }
-//        }
-//
-//        count =0;
-//
-//        Iterator<Actor> actorIterator = actors.iterator();
-//        while (actorIterator.hasNext()) {
-//            count++;
-//            if(ranActors.contains(count)) {
-//                this.actors.add(actorIterator.next());
-//            } else {
-//                actorIterator.next();
-//            }
-//        }
-//
-//
-//    }
+    @Property(name = "openLoadLink")
+    private String openLoadLink;
+
 
     public Long getId() {
         return id;
@@ -290,5 +223,13 @@ public class Movie {
 
     public void setCopy1080Link(String copy1080Link) {
         this.copy1080Link = copy1080Link;
+    }
+
+    public String getOpenLoadLink() {
+        return openLoadLink;
+    }
+
+    public void setOpenLoadLink(String openLoadLink) {
+        this.openLoadLink = openLoadLink;
     }
 }

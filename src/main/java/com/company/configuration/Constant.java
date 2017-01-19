@@ -8,5 +8,6 @@ public class Constant {
     public static final Integer LIMIT_SUGGEST = 10;
     public static final String GOOGLE_DRIVE = "drive.google.com";
     public static final String DEFAULT_VIDEO = "https://drive.google.com/open?id=0B3YJQgQ5nWc3ZVhQWXE3TGdUZDA";
-
+    public static final String HOST_DOWNLOAD = "https://docs.google.com/uc?id=";
+    public static final String PARAM_DOWNLOAD = "&export=download";
 }

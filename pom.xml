@@ -14,7 +14,7 @@
             <artifactId>spring-boot-maven-plugin</artifactId>
             <configuration>
                 <fork>true</fork>
-                <mainClass>com.company.httpclient.TestCookies</mainClass>
+                <mainClass>com.company.googledrive.OpenloadCopy</mainClass>
             </configuration>
             <executions>
                 <execution>
@@ -113,6 +113,17 @@
         <artifactId>htmlunit</artifactId>
         <version>2.23</version>
     </dependency>
-
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
 </dependencies>
 </project>
