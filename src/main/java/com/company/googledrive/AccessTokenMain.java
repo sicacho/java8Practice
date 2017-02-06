@@ -31,8 +31,8 @@ public class AccessTokenMain {
               .setHttpRequestInitializer(credential).setApplicationName("834766686975").build();
       String content = "";
       OutputStream outputStream = new ByteArrayOutputStream();
-      String fileId = "0B6iOGhAfgoxVSE5qWEo1QW1sakk"; //Your video docid in Google Drive
-      String urlreal  = "https://docs.google.com/get_video_info?access_token="+at+"&authuser=0&docid=" + fileId;
+      String fileId = "0B3YJQgQ5nWc3Mm1sTkxyTXRPSHM"; //Your video docid in Google Drive
+      String urlreal  = "https://docs.google.com/get_video_info?mobile=true"+"&authuser=0&docid=" + fileId;
       System.out.println(urlreal);
       HttpResponse resp = service.getRequestFactory()
               .buildGetRequest(new GenericUrl(urlreal)).execute();

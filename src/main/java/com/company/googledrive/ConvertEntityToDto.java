@@ -17,17 +17,13 @@ public class ConvertEntityToDto {
     } else if (url.startsWith(Resolution.RE_480.toString())) {
       urlDTO.setLabel("480");
       urlDTO.setResolution(480);
-    } else if (url.startsWith(Resolution.RE_480_WEBM.toString())) {
-      urlDTO.setLabel("480_WEBM");
-      urlDTO.setType("WEBM");
-      urlDTO.setResolution(480);
     } else if (url.startsWith(Resolution.RE_360.toString())) {
       urlDTO.setLabel("360");
       urlDTO.setResolution(360);
     }
     urlDTO.setFile((url.split("\\|")[1]));
-    urlDTO.setFile(urlDTO.getFile().replace("ipbits=48", "ipbits=0"));
-    urlDTO.setFile(urlDTO.getFile().replace("ipbits=24", "ipbits=0"));
+//    urlDTO.setFile(urlDTO.getFile().replace("ipbits=48", "ipbits=0"));
+//    urlDTO.setFile(urlDTO.getFile().replace("ipbits=24", "ipbits=0"));
 //    String urlhead = "https://redirector.googlevideo.com";
 //    urlDTO.setFile(urlhead+"/videoplayback"+urlDTO.getFile().split("/videoplayback")[1]);
 //        List<TrackDto> trackDtos = new ArrayList<>();

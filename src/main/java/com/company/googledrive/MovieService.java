@@ -205,4 +205,12 @@ public class MovieService {
     public void updateMovie(Movie movie) {
         movieRepository.save(movie);
     }
+
+    public Movie getMovie(Long id) {
+        return movieRepository.findOne(id);
+    }
+
+    public Iterable<Movie> getMoviesHaveOriginalLinkNull() {
+        return movieRepository.findMovieByOriginalLinkNull();
+    }
 }

@@ -8,6 +8,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -16,6 +17,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
 import com.google.api.services.drive.model.PermissionList;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -41,7 +43,7 @@ import java.util.stream.Collectors;
 @Import({RepositoryConfiguration.class})
 public class CopyDriveMain {
   private static final java.io.File DATA_STORE_DIR = new java.io.File(
-          System.getProperty("user.home"), ".credentials/copydrive");
+      System.getProperty("user.home"), ".credentials/drive-java-quickstart");
 
   /**
    * Global instance of the {@link FileDataStoreFactory}.
@@ -52,7 +54,7 @@ public class CopyDriveMain {
    * Global instance of the JSON factory.
    */
   private static final JsonFactory JSON_FACTORY =
-          JacksonFactory.getDefaultInstance();
+      JacksonFactory.getDefaultInstance();
 
   /**
    * Global instance of the HTTP transport.
@@ -67,6 +69,7 @@ public class CopyDriveMain {
    */
   private static final Set<String> SCOPES = DriveScopes.all();
   private static final List<String> FullScope = new ArrayList<>();
+
   static {
     try {
       HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -76,7 +79,19 @@ public class CopyDriveMain {
       System.exit(1);
     }
   }
-
+  private static FileList getFileList(Drive service, String folder, String nextPageToken) throws IOException {
+    if (!nextPageToken.equals("")) {
+      return service.files().list().setQ("'" + folder + "' in parents")
+          .setPageSize(1000)
+          .setPageToken(nextPageToken)
+          .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
+          .execute();
+    }
+    return service.files().list().setQ("'" + folder + "' in parents")
+        .setPageSize(1000)
+        .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
+        .execute();
+  }
   /**
    * Creates an authorized Credential object.
    *
@@ -86,21 +101,21 @@ public class CopyDriveMain {
   public static Credential authorize() throws IOException {
     // Load client secrets.
     InputStream in =
-            DriveQuickstart.class.getResourceAsStream("/client_secret_2.json");
+        DriveQuickstart.class.getResourceAsStream("/client_secret.json");
     GoogleClientSecrets clientSecrets =
-            GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+        GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
     FullScope.add(DriveScopes.DRIVE);
     // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow =
-            new GoogleAuthorizationCodeFlow.Builder(
-                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, FullScope)
-                    .setDataStoreFactory(DATA_STORE_FACTORY)
-                    .setAccessType("offline").setApprovalPrompt("auto")
-                    .build();
+        new GoogleAuthorizationCodeFlow.Builder(
+            HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, FullScope)
+            .setDataStoreFactory(DATA_STORE_FACTORY)
+            .setAccessType("offline").setApprovalPrompt("auto")
+            .build();
     Credential credential = new AuthorizationCodeInstalledApp(
-            flow, new LocalServerReceiver()).authorize("432161060989");
+        flow, new LocalServerReceiver()).authorize("834766686975");
     System.out.println(
-            "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+        "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
     return credential;
   }
 
@@ -109,43 +124,41 @@ public class CopyDriveMain {
     try {
       Credential credential = authorize();
       Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
-              .setHttpRequestInitializer(credential).setApplicationName("432161060989").build();
+          .setHttpRequestInitializer(credential).setApplicationName("834766686975").build();
       ApplicationContext ctx = null;
       ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
       MovieService movieService = (MovieService) ctx.getBean("movieService");
-//      InputStream inputStream = new
-//      Permission permission = new Permission();
-//      permission.setType("anyone");
-//      permission.setRole("reader");
-//      File file = new File();
-//      file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
-//      file.setMimeType("image/png");
-//      file.setName("testcopy");
-//      File fileCopy = service.files().copy("0B6iOGhAfgoxVMEp5SGtaVnpnQ1E",file).execute();
-//      service.permissions().create(fileCopy.getId(),permission).execute();
-//      movie.setCopyLinkOriginal(fileCopy.getId()+"|"+"orginal");
-//      movieService.updateMovie(movie);
-//      List<Permission> permissions = Arrays.asList(permission);
-//      for (int i = 60; i < 113; i++) {
-//        flag = i;
-//        Iterable<Movie> movies = movieService.getMovies(i,null,null);
-//        for (Movie movie : movies) {
-//          if(movie.getCopyLinkOriginal()==null) {
-//            String id = movie.getUrlVideos()[0].replace("https://drive.google.com/open?id=","");
-//            System.out.println(id);
-//            System.out.println(movie.getName());
-//            File file = new File();
-//            file.setParents(Arrays.asList("0B28pDkSFd-VZN0hkNjVJdDRhSEk"));
-//            file.setMimeType("image/png");
-//            File fileCopy = service.files().copy(id,file).execute();
+      Permission permission = new Permission();
+      permission.setType("anyone");
+      permission.setRole("reader");
+      List<String> ids = getFileList(service,"0B6iOGhAfgoxVYjRkYmpmT2FpUlU","").getFiles().stream().map(file1 -> file1.getId()).collect(Collectors.toList());
+      for (int i = 51; i < 113; i++) {
+        flag = i;
+        Iterable<Movie> movies = movieService.getMovies(i, null, null);
+        for (Movie movie : movies) {
+          if (movie.getCopyLinkOriginal() != null && ids.contains(movie.getId())==false) {
+            String id = movie.getCopyLinkOriginal();
+            System.out.println(id);
+            System.out.println(movie.getName());
+            File file = new File();
+            file.setParents(Arrays.asList("0B6iOGhAfgoxVYjRkYmpmT2FpUlU"));
+            file.setMimeType("video/mp4");
+            try {
+              File fileCopy = service.files().copy(id, file).execute();
+              service.permissions().create(fileCopy.getId(), permission).execute();
+            } catch (GoogleJsonResponseException json) {
+              if(json.getDetails().getCode()==404) {
+                movie.setCopyLinkOriginal(null);
+                movieService.updateMovie(movie);
+              }
+            }
 //            movie.setCopyLinkOriginal(fileCopy.getId()+"|"+"orginal");
 //            movieService.updateMovie(movie);
-//            service.permissions().create(fileCopy.getId(),permission).execute();
-//            System.out.println(movie.getCode());
-//
-//          }
-//        }
-//      }
+            System.out.println(movie.getCode());
+
+          }
+        }
+      }
 
     } catch (Exception e) {
       System.out.println(flag);

@@ -3,6 +3,7 @@ package com.company.repository;
 import com.company.domain.Movie;
 import org.springframework.data.neo4j.annotation.Query;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -40,5 +41,8 @@ public interface MovieRepository extends BaseRepository<Movie> {
 
     @Query("MATCH(n:Movie) where upper(n.code) = {0} return n")
     public Iterable<Movie> findMovieByCode(String code);
+
+    @Query("MATCH(n:Movie) where (n.copyOriginalLink) IS NULL  return n")
+    public Iterable<Movie> findMovieByOriginalLinkNull();
 
 }
