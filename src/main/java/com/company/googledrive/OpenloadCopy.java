@@ -27,24 +27,51 @@ public class OpenloadCopy {
     ApplicationContext ctx = null;
     ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
     MovieService movieService = (MovieService) ctx.getBean("movieService");
-    String startFrom = "1";
-    String endFrom = "113";
+    String startFrom = "15";
+    String endFrom = "112";
     int start = Integer.parseInt(startFrom);
     int end = Integer.parseInt(endFrom);
     ExecutorService executor = Executors.newFixedThreadPool(50);
-    MigrateService migrateService = new GDriveMigrateService();
+    MigrateService migrateService = new OpenloadMigrateService();
     System.out.println("Start : " + startFrom);
     System.out.println("End : " + endFrom);
-    BlockingQueue<Movie> movieBlockingQueue = new LinkedBlockingQueue<>();
-    Iterable<Movie> moviesNull = movieService.getMoviesHaveOriginalLinkNull();
-    moviesNull.forEach(movie -> {
-      try {
-        movieBlockingQueue.put(movie);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+    for (int i = start; i <= end; i++) {
+      Iterable<Movie> movies = movieService.getMovies(i, null, null);
+      List<Movie> movieList = new ArrayList<>();
+      movies.forEach(movie -> movieList.add(movie));
+      for (int j = 0; j < movieList.size(); j++) {
+        Movie movie = movieList.get(j);
+        Runnable run = new Runnable() {
+          @Override
+          public void run() {
+            try {
+              String urlG = movie.getUrlVideos()[0];
+              System.out.println("Start upload " + movie.getCode());
+              migrateService.migrate(urlG, movie.getId().toString());
+              System.out.println("Finish upload " + movie.getCode());
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          }
+        };
+        executor.execute(run);
       }
-    });
-    System.out.println("Movie blocking queue : " + movieBlockingQueue.size());
+    }
+    executor.shutdown();
+/**
+ * Movies still not upload
+ */
+//    BlockingQueue<Movie> movieBlockingQueue = new LinkedBlockingQueue<>();
+//    Iterable<Movie> moviesNull = movieService.getMoviesHaveOriginalLinkNull();
+//    moviesNull.forEach(movie -> {
+//      try {
+//        movieBlockingQueue.put(movie);
+//      } catch (InterruptedException e) {
+//        e.printStackTrace();
+//      }
+//    });
+//    System.out.println("Movie blocking queue : " + movieBlockingQueue.size());
+
 //    Runnable run = new Runnable() {
 //
 //      @Override
@@ -103,12 +130,12 @@ public class OpenloadCopy {
       if (element != null) {
         String downloadLink = response.parse().getElementById("uc-download-link").attr("href");
         downloadLink = Jsoup.connect("https://docs.google.com" + downloadLink)
-                .userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
-                .referrer("https://docs.google.com" + downloadLink)
-                .header("Upgrade-Insecure-Requests", "1")
-                .cookies(response.cookies())
-                .followRedirects(false)
-                .method(Connection.Method.GET).execute().header("location");
+            .userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
+            .referrer("https://docs.google.com" + downloadLink)
+            .header("Upgrade-Insecure-Requests", "1")
+            .cookies(response.cookies())
+            .followRedirects(false)
+            .method(Connection.Method.GET).execute().header("location");
         UrlDTO urlDTO = new UrlDTO();
         urlDTO.setFile(downloadLink);
         urlDTO.setLabel(label);

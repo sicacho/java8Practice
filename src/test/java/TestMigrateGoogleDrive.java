@@ -33,7 +33,7 @@ public class TestMigrateGoogleDrive {
   public void testMigrate() throws Exception {
 
 
-    MigrateService migrateService = new GDriveMigrateService();
+    MigrateService migrateService = new OpenloadMigrateService();
     migrateService.migrate("https://drive.google.com/open?id=0B3YJQgQ5nWc3VkJJN0NUV2tHcU0","testupload");
 
   }
