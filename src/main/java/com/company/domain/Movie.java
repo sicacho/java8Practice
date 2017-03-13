@@ -68,6 +68,19 @@ public class Movie {
     @Property(name = "openLoadLink")
     private String openLoadLink;
 
+    @Property(name = "show")
+    private Boolean show;
+
+    public Boolean getShow() {
+        if(show==null) {
+            show = true;
+        }
+        return show;
+    }
+
+    public void setShow(Boolean show) {
+        this.show = show;
+    }
 
     public Long getId() {
         return id;

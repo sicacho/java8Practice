@@ -22,18 +22,17 @@ import java.util.stream.Collectors;
  */
 public class UpdatePreviewLink {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-    GoogleDriveService googleDriveService = new GoogleDriveService();
-    Credential credential = googleDriveService.authorize();
-    Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
-        .setHttpRequestInitializer(credential).setApplicationName("432161060989").build();
+//    GoogleDriveService googleDriveService = new GoogleDriveService();
+//    Credential credential = googleDriveService.authorize();
+//    Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
+//        .setHttpRequestInitializer(credential).setApplicationName("432161060989").build();
     ApplicationContext ctx = null;
     ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
     MovieService movieService = (MovieService) ctx.getBean("movieService");
-    for (int i = 1; i < 113; i++) {
+    for (int i = 1; i < 119; i++) {
       Iterable<Movie> movies = movieService.getMovies(i,null,null);
       movies.forEach(movie -> {
-//        if(movie.)
-        movie.setCopyLinkOriginal(null);
+        movie.setShow(true);
         movieService.updateMovie(movie);
       });
     }

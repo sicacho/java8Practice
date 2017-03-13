@@ -76,6 +76,7 @@ public class MovieService {
                 movie.setViews(0);
                 movie.setCreateDate((new Date()).getTime());
                 movie.setHD(movieDTO.isHD);
+                movie.setShow(false);
                 Movie movieAfterSave = movieRepository.save(movie);
                 System.out.println("Insert Movie : " + movieAfterSave.getId());
 
