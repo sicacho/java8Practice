@@ -39,7 +39,7 @@ public class Main {
     public static void main(String[] args) {
 //        System.out.println(JsonConverter.getData().size());
         List<MovieDTO> movieDTOs = null;
-        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVcDUyZ3RvQXh6LTg");
+        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVZTBsaXRnOFdwQ3M");
         ApplicationContext ctx = null;
         ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
         MovieService movieService = (MovieService) ctx.getBean("movieService");
@@ -76,17 +76,22 @@ public class Main {
             String fileName = "";
             for (File file : files) {
                 if(!file.getName().equals("test")) {
-                    System.out.println("Files: " + file.getName() + " | " + file.getId());
-                    movieDTO = new MovieDTO();
-                    fileName = file.getName();
-                    if(fileName.contains(".")) {
-                        fileName = file.getName().substring(0,file.getName().indexOf("."));
+                    try {
+                        System.out.println("Files: " + file.getName() + " | " + file.getId());
+                        movieDTO = new MovieDTO();
+                        fileName = file.getName();
+                        if(fileName.contains(".")) {
+                            fileName = file.getName().substring(0,file.getName().indexOf("."));
+                        }
+                        fileName = fileName.replace("%","");
+                        movieDTO.name = fileName;
+                        movieDTO.googleId = file.getId();
+                        movieDTO.isHD = file.getVideoMediaMetadata().getHeight() > 480 ? true : false;
+                        movieDTOs.add(movieDTO);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    fileName = fileName.replace("%","");
-                    movieDTO.name = fileName;
-                    movieDTO.googleId = file.getId();
-                    movieDTO.isHD = file.getVideoMediaMetadata().getHeight() > 480 ? true : false;
-                    movieDTOs.add(movieDTO);
+
                 }
 
             }
@@ -96,7 +101,7 @@ public class Main {
     }
 
     private static void insertMovieFromListType(List<MovieDTO> movieDTOs,MovieService movieService) throws InterruptedException {
-        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\study\\JAVService\\hitodzuma-library-beautiful.json");
+        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\study\\javservice_metadata\\linklist_RCT.json");
         BlockingQueue<String> movieLinks = new LinkedBlockingQueue<>();
         List<MovieDTO> moviesHaveDetailList = new ArrayList<>();
         Queue<String> pageLinks = new ArrayDeque<>();

@@ -12,7 +12,7 @@ public class LinkCommentDTO {
     public List<String> uploaded_net;
     public List<String> rapidgator_net;
     public Integer numberWantIt = 0;
-
+    public String create_date;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

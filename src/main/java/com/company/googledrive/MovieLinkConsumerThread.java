@@ -35,13 +35,23 @@ public class MovieLinkConsumerThread implements Runnable {
                 String link  = movieLinks.poll();
                 if(link!=null) {
                     System.out.println("Thread "+ Thread.currentThread().getName() +" is running with Parse Link = " + link);
-                    MovieDTO movieDTO = MovieParser.getMovieFromDetailLink(link);
-                    movieVideoURLs.stream().forEach(movieHasVideo -> {if(movieHasVideo.name.toUpperCase().equals(movieDTO.name.toUpperCase())){
-                        movieDTO.googleId = movieHasVideo.googleId;
-                        movieDTO.isHD = movieHasVideo.isHD;
-                    }});
-                    movieDTOList.add(movieDTO);
-                    System.out.println("Movie Size " + movieDTOList.size());
+                    try {
+                        MovieDTO movieDTO = MovieParser.getMovieFromDetailLink(link);
+                        movieVideoURLs.stream().forEach(movieHasVideo -> {if(movieHasVideo.name.toUpperCase().equals(movieDTO.name.toUpperCase())){
+                            movieDTO.googleId = movieHasVideo.googleId;
+                            movieDTO.isHD = movieHasVideo.isHD;
+                        }});
+                        movieDTOList.add(movieDTO);
+                        System.out.println("Movie Size " + movieDTOList.size());
+                    } catch (Exception e){
+                        try {
+                            movieLinks.put(link);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        e.printStackTrace();
+                    }
+
                 }
             }
             stop();

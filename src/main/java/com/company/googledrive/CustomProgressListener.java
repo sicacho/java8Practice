@@ -28,6 +28,7 @@ class CustomProgressListener implements MediaHttpDownloaderProgressListener {
   Permission permission = new Permission();
 
   public void progressChanged(MediaHttpDownloader downloader) {
+
     switch (downloader.getDownloadState()) {
       case MEDIA_IN_PROGRESS:
         break;

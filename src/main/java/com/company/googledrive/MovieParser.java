@@ -92,6 +92,7 @@ public class MovieParser {
             linkCommentDTO.rapidgator_net = rapidgator;
             linkCommentDTO.numberWantIt = Integer.valueOf(doc.getElementById("subscribed").getElementsByTag("a").text());
             linkCommentDTO.linkprimary = link;
+            linkCommentDTO.create_date = doc.getElementById("video_date").getElementsByClass("text").get(0).text();
             linkCommentDTO.code_video = doc.getElementById("video_id").getElementsByClass("text").first().html();
         }  catch (Exception ex) {
            ex.printStackTrace();
