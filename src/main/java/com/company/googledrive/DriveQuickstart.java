@@ -99,10 +99,12 @@ public class DriveQuickstart {
         new GoogleAuthorizationCodeFlow.Builder(
             HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, FullScope)
             .setDataStoreFactory(DATA_STORE_FACTORY)
-            .setAccessType("offline").setApprovalPrompt("consent")
+            .setAccessType("offline").setApprovalPrompt("auto")
             .build();
     Credential credential = new AuthorizationCodeInstalledApp(
-        flow, new LocalServerReceiver()).authorize("834766686975");
+        flow, new LocalServerReceiver()).authorize("432161060989");
+//    System.out.println(flow.newAuthorizationUrl());
+//    Credential credential = flow.loadCredential("432161060989");
     System.out.println(
         "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
     return credential;

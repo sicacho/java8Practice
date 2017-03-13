@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +37,12 @@ public class TestMigrateGoogleDrive {
     MigrateService migrateService = new OpenloadMigrateService();
     migrateService.migrate("https://drive.google.com/open?id=0B3YJQgQ5nWc3VkJJN0NUV2tHcU0","testupload");
 
+  }
+
+  @Test
+  public void testListFolder() throws IOException {
+    OpenloadMigrateService openloadMigrateService = new OpenloadMigrateService();
+    openloadMigrateService.existedMovies().stream().forEach(System.out::println);
   }
 
   @Test

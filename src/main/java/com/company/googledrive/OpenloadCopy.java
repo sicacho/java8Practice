@@ -2,11 +2,13 @@ package com.company.googledrive;
 
 import com.company.configuration.Constant;
 import com.company.domain.Movie;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class OpenloadCopy {
     ApplicationContext ctx = null;
     ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
     MovieService movieService = (MovieService) ctx.getBean("movieService");
-    String startFrom = "15";
+    String startFrom = "1";
     String endFrom = "112";
     int start = Integer.parseInt(startFrom);
     int end = Integer.parseInt(endFrom);
@@ -35,29 +37,32 @@ public class OpenloadCopy {
     MigrateService migrateService = new OpenloadMigrateService();
     System.out.println("Start : " + startFrom);
     System.out.println("End : " + endFrom);
-    for (int i = start; i <= end; i++) {
-      Iterable<Movie> movies = movieService.getMovies(i, null, null);
-      List<Movie> movieList = new ArrayList<>();
-      movies.forEach(movie -> movieList.add(movie));
-      for (int j = 0; j < movieList.size(); j++) {
-        Movie movie = movieList.get(j);
-        Runnable run = new Runnable() {
-          @Override
-          public void run() {
-            try {
-              String urlG = movie.getUrlVideos()[0];
-              System.out.println("Start upload " + movie.getCode());
-              migrateService.migrate(urlG, movie.getId().toString());
-              System.out.println("Finish upload " + movie.getCode());
-            } catch (Exception e) {
-              e.printStackTrace();
+    while (existedMovies().size()<(12*112)) {
+      for (int i = start; i <= end; i++) {
+        Iterable<Movie> movies = movieService.getMovies(i, null, null);
+        List<Movie> movieList = new ArrayList<>();
+        movies.forEach(movie -> movieList.add(movie));
+        for (int j = 0; j < movieList.size(); j++) {
+          Movie movie = movieList.get(j);
+          Runnable run = new Runnable() {
+            @Override
+            public void run() {
+              try {
+                String urlG = movie.getUrlVideos()[0];
+                System.out.println("Start upload " + movie.getCode());
+                migrateService.migrate(urlG, movie.getId().toString());
+                System.out.println("Finish upload " + movie.getCode());
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
             }
-          }
-        };
-        executor.execute(run);
+          };
+          executor.execute(run);
+        }
       }
+      executor.shutdown();
     }
-    executor.shutdown();
+
 /**
  * Movies still not upload
  */
@@ -118,6 +123,8 @@ public class OpenloadCopy {
   }
 
 
+
+
   public static List<UrlDTO> getListUrlVideoDownload(String url) throws NoSuchElementException {
     List<UrlDTO> result = new ArrayList<>();
     String[] params = url.split("\\|");
@@ -149,5 +156,12 @@ public class OpenloadCopy {
     return result;
   }
 
-
+  public static List<String> existedMovies() throws IOException {
+    String url = "https://api.openload.co/1/file/listfolder?login=2956f80c44359e25&key=rf8uEike&folder=2789453";
+    RestTemplate restTemplate = new RestTemplate();
+    String listFolderUrl = restTemplate.getForObject(url, String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    ListFileDTO listFileDTO = mapper.readValue(listFolderUrl, ListFileDTO.class);
+    return listFileDTO.getNames();
+  }
 }
