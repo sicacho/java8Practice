@@ -20,13 +20,13 @@ public class RapidgatorChecker {
   static ObjectMapper objectMapper = new ObjectMapper();
 
   public static void main(String[] args) throws IOException {
-    System.getProperties().put("http.proxyHost", "103.14.8.239");
-    System.getProperties().put("http.proxyPort", "8080");
-    System.setProperty("java.net.useSystemProxies", "true");
+//    System.getProperties().put("http.proxyHost", "103.14.8.239");
+//    System.getProperties().put("http.proxyPort", "8080");
+//    System.setProperty("java.net.useSystemProxies", "true");
     List<LinkCommentDTO> linkCommentDTOs = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     try {
-      linkCommentDTOs = mapper.readValue(new File("C:\\testdielink.json"), new TypeReference<List<LinkCommentDTO>>(){});
+      linkCommentDTOs = mapper.readValue(new File("C:\\link.json"), new TypeReference<List<LinkCommentDTO>>(){});
     } catch (IOException e) {
       e.printStackTrace();
     }

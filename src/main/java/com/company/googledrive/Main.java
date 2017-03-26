@@ -39,7 +39,7 @@ public class Main {
     public static void main(String[] args) {
 //        System.out.println(JsonConverter.getData().size());
         List<MovieDTO> movieDTOs = null;
-        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVZTBsaXRnOFdwQ3M");
+        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVRHVuZ3gzMEpkdk0");
         ApplicationContext ctx = null;
         ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
         MovieService movieService = (MovieService) ctx.getBean("movieService");
@@ -101,7 +101,7 @@ public class Main {
     }
 
     private static void insertMovieFromListType(List<MovieDTO> movieDTOs,MovieService movieService) throws InterruptedException {
-        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\study\\javservice_metadata\\linklist_RCT.json");
+        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\study\\javservice_metadata\\hitodzuma-library-20170321.json");
         BlockingQueue<String> movieLinks = new LinkedBlockingQueue<>();
         List<MovieDTO> moviesHaveDetailList = new ArrayList<>();
         Queue<String> pageLinks = new ArrayDeque<>();
