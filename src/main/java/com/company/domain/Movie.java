@@ -71,6 +71,17 @@ public class Movie {
     @Property(name = "show")
     private Boolean show;
 
+    @Property(name = "uncen")
+    private Boolean uncen;
+
+    public Boolean getUncen() {
+        return uncen;
+    }
+
+    public void setUncen(Boolean uncen) {
+        this.uncen = uncen;
+    }
+
     public Boolean getShow() {
         if(show==null) {
             show = true;

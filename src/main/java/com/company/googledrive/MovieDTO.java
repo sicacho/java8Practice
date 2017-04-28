@@ -15,6 +15,7 @@ public class MovieDTO implements Comparable {
     public String image;
     public String studio;
     public Boolean isHD;
+    public Boolean uncen;
 
     public MovieDTO() {
     }
