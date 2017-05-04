@@ -22,31 +22,84 @@ import java.util.stream.Collectors;
  * Created by tnkhang on 4/28/2017.
  */
 public class DataExample {
-  public static void main(String[] args) {
-    List<MovieDTO> movieDTOs = null;
-    movieDTOs = getDataFromGoogleDrive("0B8q0TNKqADEHTWZHUHotVno4blk");
+  public static void main(String[] args) throws IOException {
     ApplicationContext ctx = null;
     ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
     MovieService movieService = (MovieService) ctx.getBean("movieService");
-    MovieRepository movieRepository = (MovieRepository) ctx.getBean("movieRepository");
-    Iterable<Movie> movies = movieRepository.findAll();
-    for (Movie movie : movies) {
-      movie.setUncen(true);
-      movieRepository.save(movie);
-    }
-//    movieDTOs = movieDTOs.stream().map(movieDTO -> {
-//      movieDTO.image="https://lh3.google.com/u/0/d/"+movieDTO.googleId+"=w800-h539-p-k-nu-iv1";
-//      movieDTO.studio="uncen";
-//      movieDTO.types= Arrays.asList("test","action");
-//      movieDTO.actors = Arrays.asList("unknown");
-//      movieDTO.uncen = true;
-//      movieDTO.description = movieDTO.name;
-//      return movieDTO;
-//    }).collect(Collectors.toList());
-//    movieService.insertMovies(movieDTOs);
+    List<MovieDTO> movieDTOs = new ArrayList<>();
+    Drive service = DriveQuickstart.getDriveService();
+    getFileList(service,"0BxjPkoVoNqw7ME5pLUtYX09BaXM",null,movieDTOs);
+
+//    MovieRepository movieRepository = (MovieRepository) ctx.getBean("movieRepository");
+//    Iterable<Movie> movies = movieRepository.findAll();
+//    for (Movie movie : movies) {
+//      movie.setUncen(true);
+//      movieRepository.save(movie);
+//    }
+    System.out.println(movieDTOs.size());
+    movieDTOs = movieDTOs.stream().map(movieDTO -> {
+      movieDTO.image=movieDTO.googleId;
+      movieDTO.studio="user upload";
+      movieDTO.types= Arrays.asList("drama","mother");
+      movieDTO.actors = Arrays.asList("unknown");
+      movieDTO.uncen = true;
+      movieDTO.description = movieDTO.name;
+      return movieDTO;
+    }).collect(Collectors.toList());
+    movieService.insertMoviesTestData(movieDTOs);
   }
 
+  private static void getFileList(Drive service, String folder, String nextPageToken,List<MovieDTO> movieDTOs) throws IOException {
+    FileList fileList = null;
+    if(nextPageToken==null) {
+       fileList = service.files().list().setQ("'" + folder + "' in parents")
+          .setPageSize(100)
+          .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
+          .execute();
+    } else {
+      fileList = service.files().list().setQ("'" + folder + "' in parents")
+          .setPageSize(100)
+          .setPageToken(nextPageToken)
+          .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
+          .execute();
+    }
+    List<File> files = fileList.getFiles();
+    if (files == null || files.size() == 0) {
+      System.out.println("No files found.");
+    } else {
+      MovieDTO movieDTO = null;
+      String fileName = "";
+      for (File file : files) {
+        if(!file.getName().equals("test")) {
+          try {
+            System.out.println("Files: " + file.getName() + " | " + file.getId());
+            movieDTO = new MovieDTO();
+            fileName = file.getName();
+            if(fileName.contains(".")) {
+              fileName = file.getName().substring(0,file.getName().indexOf("."));
+            }
+            fileName = fileName.replace("%","");
+            movieDTO.name = fileName;
+            movieDTO.googleId = file.getId();
+            if(file.getVideoMediaMetadata()!=null) {
+              movieDTO.isHD = file.getVideoMediaMetadata().getHeight() > 480 ? true : false;
+            } else {
+              movieDTO.isHD = false;
+            }
+            movieDTOs.add(movieDTO);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
 
+        }
+
+      }
+    }
+    if (fileList.getNextPageToken()!=null && !fileList.getNextPageToken().equals("")) {
+      getFileList(service,folder,fileList.getNextPageToken(),movieDTOs);
+    }
+
+  }
 
   private static List<MovieDTO> getDataFromGoogleDrive(String folderId) {
     Drive service = null;
@@ -55,7 +108,7 @@ public class DataExample {
     try {
       service = DriveQuickstart.getDriveService();
       result = service.files().list().setQ("'"+ folderId +"' in parents")
-              .setPageSize(1000)
+              .setPageSize(200)
               .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
               .execute();
     } catch (IOException e) {
