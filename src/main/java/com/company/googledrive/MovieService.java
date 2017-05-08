@@ -84,6 +84,57 @@ public class MovieService {
         }
     }
 
+
+    @Transactional
+    public void insertMoviesTestData(List<MovieDTO> movieDTOs) {
+        for (int i = 0; i < movieDTOs.size(); i++) {
+            String movieCode = movieDTOs.get(i).name;
+            Iterable<Movie> movies = movieRepository.findMovieByCode(movieCode);
+            if(!movies.iterator().hasNext()){
+                List<String> actorsName = movieDTOs.get(i).actors;
+                List<String> typesName = movieDTOs.get(i).types;
+                MovieDTO movieDTO = movieDTOs.get(i);
+                List<Actor> actors = getListActorFromName(actorsName);
+                List<Type> types = getListTypeFromName(typesName);
+                String studioName = movieDTO.studio;
+                studioName = studioName.replace("."," ");
+                studioName = studioName.replace("/"," ");
+                studioName = studioName.trim().replaceAll("\\s{2,}", " ");
+                Iterable<Studio> studios = studioRepository.findByName(studioName.toUpperCase());
+                Studio studio = null;
+                if(studios.iterator().hasNext()) {
+                    studio = studios.iterator().next();
+                }
+                if(studio==null) {
+                    studio = new Studio();
+                    studioName = studioName.replace("."," ");
+                    studioName = studioName.replace("/"," ");
+                    studioName = studioName.trim().replaceAll("\\s{2,}", " ");
+                    studio.setName(studioName);
+                    studio.getSeoName();
+                    studioRepository.save(studio);
+                }
+//                Studio studio1 = studioRepository.findOne(Long.valueOf(27709));
+                Movie movie = new Movie();
+                movie.setName(movieDTO.description.replace("%",""));
+                movie.setCode(movieDTO.name);
+                movie.setActors(actors);
+                movie.setTypes(types);
+                movie.setUrlImage(movieDTO.image);
+                movie.setUrlVideos(new String[]{"https://drive.google.com/open?id="+movieDTO.googleId});
+                movie.setStudio(studio);
+                movie.setViews(0);
+                movie.setCreateDate((new Date()).getTime());
+                movie.setHD(movieDTO.isHD);
+                movie.setShow(true);
+                movie.setUncen(true);
+                Movie movieAfterSave = movieRepository.save(movie);
+                System.out.println("Insert Movie : " + movieAfterSave.getId());
+
+            }
+        }
+    }
+
     private List<Actor> getListActorFromName(List<String> actorsName) {
         List<Actor> actors = new ArrayList<>();
         if(actorsName.size()==0) {
