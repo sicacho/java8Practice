@@ -3,13 +3,16 @@ package com.company.downloadlink;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
-import org.jsoup.Jsoup;
+import org.jsoup.*;
+import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Created by tnkhang on 3/22/2017.
@@ -26,15 +29,32 @@ public class RapidgatorChecker {
     List<LinkCommentDTO> linkCommentDTOs = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     try {
-      linkCommentDTOs = mapper.readValue(new File("C:\\linkLXVS.json"), new TypeReference<List<LinkCommentDTO>>(){});
+      linkCommentDTOs = mapper.readValue(new File("C:\\link.json"), new TypeReference<List<LinkCommentDTO>>(){});
     } catch (IOException e) {
       e.printStackTrace();
     }
 //    String sessionId = getSessionId("trustme013@gmail.com","pKnTAb");
     linkCommentDTOs.forEach(linkCommentDTO -> {
-      boolean linkNotDie = linkCommentDTO.rapidgator_net.stream().distinct().allMatch(s -> isNotDie(s));
+//      boolean linkNotDie = linkCommentDTO.rapidgator_net.stream().allMatch(s -> isNotDie(s));
+      boolean linkNotDie;
+      linkNotDie = true;
       if(linkNotDie) {
-        linkCommentDTO.rapidgator_net.stream().forEach(System.out::println);
+        linkCommentDTO.rapidgator_net.stream().forEach(s -> {
+          String[] data = s.split("\\[|\\]");
+          data = Stream.of(data).distinct().toArray(String[]::new);
+          Pattern p = Pattern.compile("\\w+-\\d+");
+          for (String link : data) {
+            if(link.startsWith("http://ra") || link.startsWith("http://rg")) {
+              if(!p.matcher(link).find()) {
+                link = link + "/" + linkCommentDTO.code_video;
+              }
+              if(isNotDie(link)) {
+                System.out.println(link);
+              }
+
+            }
+          }
+        });
       }
     });
   }
@@ -42,18 +62,24 @@ public class RapidgatorChecker {
   private static boolean isNotDie(String link) {
     Document doc = null;
     try {
-      doc = Jsoup.connect(link)
-              .timeout(10000)
-              .header("Referer","http://www.javlibrary.com/en")
-              .header("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36").get();
-      if(doc.getElementsByTag("title").get(0).text().startsWith("Download file")) {
-        return true;
+      Connection.Response response = Jsoup.connect(link).timeout(10000)
+          .header("Referer","http://www.javlibrary.com/en")
+          .header("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36").followRedirects(false).execute();
+      if(response.statusCode()==302 || response.statusCode()==404 ) {
+        return false;
+      }
+      doc = response.parse();
+    } catch (HttpStatusException status) {
+      if(status.getStatusCode()==404) {
+        return false;
       }
     } catch (IOException e) {
-      System.out.println(link);
-      return false;
+      System.out.println("Error : " + link);
+      e.printStackTrace();
     }
-
+    if(doc.getElementsByTag("title").get(0).text().startsWith("Download file")) {
+      return true;
+    }
     return false;
   }
 
