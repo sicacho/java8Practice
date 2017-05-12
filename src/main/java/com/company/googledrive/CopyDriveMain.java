@@ -19,8 +19,6 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
-import com.google.api.services.drive.model.PermissionList;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -28,10 +26,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,21 +73,27 @@ public class CopyDriveMain {
       System.exit(1);
     }
   }
-  private static FileList getFileList(Drive service, String folder, String nextPageToken) throws IOException {
-    if (!nextPageToken.equals("")) {
-      return service.files().list().setQ("'" + folder + "' in parents")
-          .setPageSize(1000)
+  public static void getFileList(List<String> ids, Drive service, String folder, String nextPageToken) throws IOException {
+    FileList fileList = null;
+    if (nextPageToken!=null && !nextPageToken.equals("")) {
+      fileList = service.files().list().setQ("'" + folder + "' in parents")
+          .setPageSize(100)
           .setPageToken(nextPageToken)
           .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
           .execute();
+    } else {
+      fileList = service.files().list().setQ("'" + folder + "' in parents")
+          .setPageSize(100)
+          .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
+          .execute();
     }
-    return service.files().list().setQ("'" + folder + "' in parents")
-        .setPageSize(1000)
-        .setFields("nextPageToken, files(id, name, videoMediaMetadata)")
-        .execute();
+    fileList.getFiles().stream().forEach(file -> ids.add(file.getId()));
+    if(fileList.getNextPageToken()!=null) {
+      getFileList(ids,service,folder,fileList.getNextPageToken());
+    }
   }
   /**
-   * Creates an authorized Credential object.
+   * Creates an authorized Caredential object.
    *
    * @return an authorized Credential object.
    * @throws IOException
@@ -131,10 +131,11 @@ public class CopyDriveMain {
       Permission permission = new Permission();
       permission.setType("anyone");
       permission.setRole("reader");
-      List<String> ids = getFileList(service,"0B6iOGhAfgoxVYjRkYmpmT2FpUlU","").getFiles().stream().map(file1 -> file1.getId()).collect(Collectors.toList());
-      for (int i = 51; i < 113; i++) {
+      List<String> ids = new ArrayList<>();
+          getFileList(ids, service, "0B6iOGhAfgoxVYjRkYmpmT2FpUlU", "");
+      for (int i = 1; i < 213; i++) {
         flag = i;
-        Iterable<Movie> movies = movieService.getMovies(i, null, null);
+        Iterable<Movie> movies = movieService.getMovies(i, 10, null);
         for (Movie movie : movies) {
           if (movie.getCopyLinkOriginal() != null && ids.contains(movie.getId())==false) {
             String id = movie.getCopyLinkOriginal();

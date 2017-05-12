@@ -38,7 +38,7 @@ class CustomProgressListener implements MediaHttpDownloaderProgressListener {
 
           File fileMetadata = new File();
           fileMetadata.setName(newname);
-          fileMetadata.setParents(Arrays.asList("0B28pDkSFd-VZdllaanJmRnhQLUk"));
+          fileMetadata.setParents(Arrays.asList("0B28pDkSFd-VZSjNCRERMM29EZ2M"));
           java.io.File mediaFile = new java.io.File(java.io.File.separator + System.getProperty("user.home")+ java.io.File.separator +"downloadtest"+ java.io.File.separator +newname);
           InputStreamContent mediaContent =
               new InputStreamContent("video/mp4",

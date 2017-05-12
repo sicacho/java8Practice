@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by Administrator on 8/13/2016.
@@ -88,12 +89,27 @@ public class MovieParser {
             while (matcher2.find()) {
                 rapidgator.add(matcher2.group());
             }
+            String code_video = doc.getElementById("video_id").getElementsByClass("text").first().html();
+            linkCommentDTO.title = doc.title();
             linkCommentDTO.uploaded_net = uploaded;
             linkCommentDTO.rapidgator_net = rapidgator;
+            linkCommentDTO.rapidgator_net = rapidgator.stream().map(s -> {
+                String[] data = s.split("\\[");
+                data[0] = data[0].replace("]","");
+                Pattern pattern3= Pattern.compile("([a-z].+-[0-9].+)");
+                Matcher matcher3 = pattern3.matcher(data[0]);
+                if(matcher3.find()){
+                    return data[0];
+                }
+                if(data[0].endsWith("/")) {
+                    return data[0]+code_video;
+                }
+                return  data[0]+"/"+code_video;
+            }).collect(Collectors.toList());
             linkCommentDTO.numberWantIt = Integer.valueOf(doc.getElementById("subscribed").getElementsByTag("a").text());
             linkCommentDTO.linkprimary = link;
             linkCommentDTO.create_date = doc.getElementById("video_date").getElementsByClass("text").get(0).text();
-            linkCommentDTO.code_video = doc.getElementById("video_id").getElementsByClass("text").first().html();
+            linkCommentDTO.code_video = code_video;
         }  catch (Exception ex) {
            ex.printStackTrace();
         }

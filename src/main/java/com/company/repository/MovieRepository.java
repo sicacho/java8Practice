@@ -18,6 +18,9 @@ public interface MovieRepository extends BaseRepository<Movie> {
     @Query("MATCH (n:Movie) return count(n)")
     public Long movieCount();
 
+    @Query("MATCH (n:Movie) where ((n.uncen)=false or (n.uncen) is null) return n.code")
+    public Iterable<String> movieCodes();
+
     @Query("MATCH (n:Movie)-[:HAS]->(t:Type) where (id(t) in {0}) and (not id(n)={1}) with n, count(*) as sum return n order by sum DESC SKIP {2} LIMIT {3}")
     public Iterable<Movie> findMovieRelated(List<Long> types,Long movieId, Integer skip, Integer limit);
 

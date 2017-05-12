@@ -26,13 +26,13 @@ public class RapidgatorChecker {
     List<LinkCommentDTO> linkCommentDTOs = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     try {
-      linkCommentDTOs = mapper.readValue(new File("C:\\link.json"), new TypeReference<List<LinkCommentDTO>>(){});
+      linkCommentDTOs = mapper.readValue(new File("C:\\linkLXVS.json"), new TypeReference<List<LinkCommentDTO>>(){});
     } catch (IOException e) {
       e.printStackTrace();
     }
 //    String sessionId = getSessionId("trustme013@gmail.com","pKnTAb");
     linkCommentDTOs.forEach(linkCommentDTO -> {
-      boolean linkNotDie = linkCommentDTO.rapidgator_net.stream().allMatch(s -> isNotDie(s));
+      boolean linkNotDie = linkCommentDTO.rapidgator_net.stream().distinct().allMatch(s -> isNotDie(s));
       if(linkNotDie) {
         linkCommentDTO.rapidgator_net.stream().forEach(System.out::println);
       }
@@ -43,14 +43,17 @@ public class RapidgatorChecker {
     Document doc = null;
     try {
       doc = Jsoup.connect(link)
+              .timeout(10000)
               .header("Referer","http://www.javlibrary.com/en")
               .header("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36").get();
+      if(doc.getElementsByTag("title").get(0).text().startsWith("Download file")) {
+        return true;
+      }
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println(link);
+      return false;
     }
-    if(doc.getElementsByTag("title").get(0).text().startsWith("Download file")) {
-      return true;
-    }
+
     return false;
   }
 

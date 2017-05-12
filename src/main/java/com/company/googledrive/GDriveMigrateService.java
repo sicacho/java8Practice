@@ -46,36 +46,47 @@ public class GDriveMigrateService implements MigrateService {
     Credential credential = googleDriveService.authorize();
     Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
         .setHttpRequestInitializer(credential).setApplicationName("432161060989").build();
-    com.google.api.client.http.HttpResponse response= service.getRequestFactory().buildGetRequest(new GenericUrl(urlG)).execute();
-    System.out.println("Download At : " + urlG);
-    InputStream inputStreamDoc = response.getContent();
-    String doc = "";
-    int ch = 0;
-    while (ch != -1) {
-      ch = inputStreamDoc.read();
-      if (ch != -1) doc += (char)ch;
-    }
-    List<UrlDTO> result = new ArrayList<>();
-    result = parseFromHtml(doc, result);
-    System.out.println("Download at : " + result.get(result.size()-1).getFile());
-    HttpTransport httpTransport = new ApacheHttpTransport();
-    MediaHttpDownloader downloader = new MediaHttpDownloader(httpTransport, httpTransport.createRequestFactory(new HttpRequestInitializer() {
-      @Override
-      public void initialize(HttpRequest request) throws IOException {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("cookie",response.getHeaders().getHeaderStringValues("set-cookie"));
-        request.setHeaders(httpHeaders);
+    java.io.File file = null;
+    OutputStream outputStream = null;
+    try {
+      com.google.api.client.http.HttpResponse response= service.getRequestFactory().buildGetRequest(new GenericUrl(urlG)).execute();
+      System.out.println("Download At : " + urlG);
+      InputStream inputStreamDoc = response.getContent();
+      String doc = "";
+      int ch = 0;
+      while (ch != -1) {
+        ch = inputStreamDoc.read();
+        if (ch != -1) doc += (char)ch;
       }
-    }).getInitializer());
-    downloader.setChunkSize(4000000);
-    java.io.File file = new java.io.File(java.io.File.separator + System.getProperty("user.home")+ java.io.File.separator +"downloadtest"+ java.io.File.separator +newname);
-    file.createNewFile();
-    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file),16000000);
-    downloader.setProgressListener(new CustomProgressListener(newname,service,outputStream));
-    long startTime = System.currentTimeMillis();
-    downloader.download(new GenericUrl(result.get(0).getFile()),outputStream);
-    long endTime = System.currentTimeMillis();
-    System.out.println("Download : " + (startTime - endTime));
+      List<UrlDTO> result = new ArrayList<>();
+      result = parseFromHtml(doc, result);
+      System.out.println("Download at : " + result.get(result.size()-1).getFile());
+      HttpTransport httpTransport = new ApacheHttpTransport();
+      MediaHttpDownloader downloader = new MediaHttpDownloader(httpTransport, httpTransport.createRequestFactory(new HttpRequestInitializer() {
+        @Override
+        public void initialize(HttpRequest request) throws IOException {
+          HttpHeaders httpHeaders = new HttpHeaders();
+          httpHeaders.set("cookie",response.getHeaders().getHeaderStringValues("set-cookie"));
+          request.setHeaders(httpHeaders);
+        }
+      }).getInitializer());
+      downloader.setChunkSize(4000000);
+      file = new java.io.File(java.io.File.separator + System.getProperty("user.home")+ java.io.File.separator +"downloadtest"+ java.io.File.separator +newname);
+      file.createNewFile();
+      outputStream = new BufferedOutputStream(new FileOutputStream(file),16000000);
+      downloader.setProgressListener(new CustomProgressListener(newname,service,outputStream));
+      long startTime = System.currentTimeMillis();
+      downloader.download(new GenericUrl(result.get(0).getFile()),outputStream);
+      long endTime = System.currentTimeMillis();
+      System.out.println("Download : " + (startTime - endTime));
+    } catch (Exception e) {
+      if(file.exists()) {
+        outputStream.close();
+        file.delete();
+      }
+      e.printStackTrace();
+    }
+
   }
 
 

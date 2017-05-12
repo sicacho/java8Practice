@@ -25,6 +25,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 /**
  * Created by Administrator on 8/11/2016.
@@ -39,7 +40,10 @@ public class Main {
     public static void main(String[] args) {
 //        System.out.println(JsonConverter.getData().size());
         List<MovieDTO> movieDTOs = null;
-        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVRHVuZ3gzMEpkdk0");
+        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVak4xSmU0R2dtZTg");
+//        movieDTOs.stream().forEach(movieDTO -> System.out.println(movieDTO.image));
+//        List<MovieDTO> movieDTOS_2 = getDataFromGoogleDrive("0Bw7bYe57hsqOcm52cGNwR1hFY2M");
+//        List<MovieDTO> stack_list = movieDTOs.stream().filter(movieDTO -> !movieDTOS_2.contains(movieDTO)).collect(Collectors.toList());//        ApplicationContext ctx = null;
         ApplicationContext ctx = null;
         ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
         MovieService movieService = (MovieService) ctx.getBean("movieService");
@@ -83,7 +87,7 @@ public class Main {
                         if(fileName.contains(".")) {
                             fileName = file.getName().substring(0,file.getName().indexOf("."));
                         }
-                        fileName = fileName.replace("%","");
+                        fileName = fileName.replace("%","").replace("Copy of (HD)","").replace("(HD)","");
                         movieDTO.name = fileName;
                         movieDTO.googleId = file.getId();
                         movieDTO.isHD = file.getVideoMediaMetadata().getHeight() > 480 ? true : false;
@@ -101,7 +105,8 @@ public class Main {
     }
 
     private static void insertMovieFromListType(List<MovieDTO> movieDTOs,MovieService movieService) throws InterruptedException {
-        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\study\\javservice_metadata\\hitodzuma-library-20170321.json");
+//        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\study\\javservice_metadata\\hitodzuma-library-20170321.json");
+        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("C:\\link.json");
         BlockingQueue<String> movieLinks = new LinkedBlockingQueue<>();
         List<MovieDTO> moviesHaveDetailList = new ArrayList<>();
         Queue<String> pageLinks = new ArrayDeque<>();

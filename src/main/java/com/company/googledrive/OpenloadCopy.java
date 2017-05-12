@@ -2,7 +2,12 @@ package com.company.googledrive;
 
 import com.company.configuration.Constant;
 import com.company.domain.Movie;
+import com.company.repository.MovieRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.drive.Drive;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -11,37 +16,53 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+
+import static com.company.googledrive.CopyDriveMain.getFileList;
 
 /**
  * Created by tnkhang on 1/18/2017.
  */
 public class OpenloadCopy {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
     ApplicationContext ctx = null;
     ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
     MovieService movieService = (MovieService) ctx.getBean("movieService");
+    MovieRepository movieRepository = (MovieRepository) ctx.getBean("movieRepository");
+    GoogleDriveService googleDriveService = new GoogleDriveService();
+    Credential credential = googleDriveService.authorize();
+    Drive service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
+        .setHttpRequestInitializer(credential).setApplicationName("432161060989").build();
+    List<String> ids = new ArrayList<>();
+    getFileList(ids,service,"0B28pDkSFd-VZSjNCRERMM29EZ2M","");
+    getFileList(ids,service,"0B28pDkSFd-VZdllaanJmRnhQLUk","");
+    Long count = movieRepository.movieCount();
     String startFrom = "1";
-    String endFrom = "112";
+    String endFrom = "213";
     int start = Integer.parseInt(startFrom);
     int end = Integer.parseInt(endFrom);
     ExecutorService executor = Executors.newFixedThreadPool(50);
-    MigrateService migrateService = new OpenloadMigrateService();
+    MigrateService migrateService = new GDriveMigrateService();
     System.out.println("Start : " + startFrom);
     System.out.println("End : " + endFrom);
-    while (existedMovies().size()<(12*112)) {
+    System.out.println("IDs Size : " + ids.size());
+    while (ids.size()<count) {
+
       for (int i = start; i <= end; i++) {
-        Iterable<Movie> movies = movieService.getMovies(i, null, null);
+        Iterable<Movie> movies = movieService.getMovies(i, 10, "date");
         List<Movie> movieList = new ArrayList<>();
-        movies.forEach(movie -> movieList.add(movie));
+        List<String> finalIds = ids;
+        movies.forEach(movie -> {
+          if(!finalIds.contains(movie.getId())) {
+            movieList.add(movie);
+          }
+        });
         for (int j = 0; j < movieList.size(); j++) {
           Movie movie = movieList.get(j);
           Runnable run = new Runnable() {
@@ -53,6 +74,10 @@ public class OpenloadCopy {
                 migrateService.migrate(urlG, movie.getId().toString());
                 System.out.println("Finish upload " + movie.getCode());
               } catch (Exception e) {
+                java.io.File file = new java.io.File(java.io.File.separator + System.getProperty("user.home")+ java.io.File.separator +"downloadtest"+ java.io.File.separator + movie.getId().toString());
+                if(file.exists()) {
+                  file.delete();
+                }
                 e.printStackTrace();
               }
             }
@@ -61,6 +86,11 @@ public class OpenloadCopy {
         }
       }
       executor.shutdown();
+      service = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
+          .setHttpRequestInitializer(credential).setApplicationName("432161060989").build();
+      ids = new ArrayList<>();
+      getFileList(ids,service,"0B28pDkSFd-VZSjNCRERMM29EZ2M","");
+      getFileList(ids,service,"0B28pDkSFd-VZdllaanJmRnhQLUk","");
     }
 
 /**
