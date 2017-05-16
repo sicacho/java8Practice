@@ -40,7 +40,7 @@ public class Main {
     public static void main(String[] args) {
 //        System.out.println(JsonConverter.getData().size());
         List<MovieDTO> movieDTOs = null;
-        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVak4xSmU0R2dtZTg");
+        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVRVUtRDY4cFFfdnM");
 //        movieDTOs.stream().forEach(movieDTO -> System.out.println(movieDTO.image));
 //        List<MovieDTO> movieDTOS_2 = getDataFromGoogleDrive("0Bw7bYe57hsqOcm52cGNwR1hFY2M");
 //        List<MovieDTO> stack_list = movieDTOs.stream().filter(movieDTO -> !movieDTOS_2.contains(movieDTO)).collect(Collectors.toList());//        ApplicationContext ctx = null;
@@ -51,6 +51,20 @@ public class Main {
         try {
             insertMovieFromListType(movieDTOs,movieService);
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void DeletePermission(List<String> googleIDs) {
+        Drive service = null;
+        try {
+            service = DriveQuickstart.getDriveService();
+            for(String id : googleIDs) {
+               File file = service.files().get(id).execute();
+               file.getPermissions().stream().forEach(permission -> System.out.println(permission.getId()));
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
