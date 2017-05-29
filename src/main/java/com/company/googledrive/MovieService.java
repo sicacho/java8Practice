@@ -77,7 +77,7 @@ public class MovieService {
                 movie.setCreateDate((new Date()).getTime());
                 movie.setHD(movieDTO.isHD);
                 movie.setShow(false);
-                movie.setUncen(false);
+                movie.setUncen(movieDTO.uncen);
                 Movie movieAfterSave = movieRepository.save(movie);
                 System.out.println("Insert Movie : " + movieAfterSave.getId());
 

@@ -36,7 +36,7 @@ public class MovieAnalyser {
 
 
   public static void main(String[] args) throws IOException {
-    String pageLink = "http://www.javlibrary.com/en/vl_searchbyid.php?&keyword=LXVS&page=";
+    String pageLink = "http://www.javlibrary.com/en/vl_star.php?&mode=&s=aymac&page=";
     List<LinkCommentDTO> linkCommentDTOs = getCommentDTOsFromUrls(pageLink);
     ObjectMapper mapper = new ObjectMapper();
     ApplicationContext ctx = null;
@@ -51,7 +51,7 @@ public class MovieAnalyser {
 //                                        .noneMatch(s -> s.toUpperCase().equals(linkCommentDTO.code_video)))
 //                .collect(Collectors.toList());
     try {
-      mapper.writerWithDefaultPrettyPrinter().writeValue(new File("C:\\linkLXVS.json"), linkCommentDTOs);
+      mapper.writerWithDefaultPrettyPrinter().writeValue(new File("D:\\linkAsahy.json"), linkCommentDTOs);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -77,7 +77,7 @@ public class MovieAnalyser {
     List<LinkCommentDTO> linkCommentDTOs = new ArrayList<>();
 
     BlockingQueue<String> pageLinks = new LinkedBlockingQueue<>();
-    for (int i = 1; i <= 2; i++) {
+    for (int i = 1; i <= 24; i++) {
       pageLinks.add(pageLink + i);
     }
     BlockingQueue<String> movieLinks = new LinkedBlockingQueue<>();

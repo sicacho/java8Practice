@@ -29,31 +29,27 @@ public class RapidgatorChecker {
     List<LinkCommentDTO> linkCommentDTOs = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     try {
-      linkCommentDTOs = mapper.readValue(new File("C:\\link.json"), new TypeReference<List<LinkCommentDTO>>(){});
+      linkCommentDTOs = mapper.readValue(new File("D:\\linkAsahy.json"), new TypeReference<List<LinkCommentDTO>>(){});
     } catch (IOException e) {
       e.printStackTrace();
     }
 //    String sessionId = getSessionId("trustme013@gmail.com","pKnTAb");
     linkCommentDTOs.forEach(linkCommentDTO -> {
-//      boolean linkNotDie = linkCommentDTO.rapidgator_net.stream().allMatch(s -> isNotDie(s));
-      boolean linkNotDie;
-      linkNotDie = true;
+      boolean linkNotDie = linkCommentDTO.rapidgator_net.stream().allMatch(s -> isNotDie(s));
       if(linkNotDie) {
         linkCommentDTO.rapidgator_net.stream().forEach(s -> {
-          String[] data = s.split("\\[|\\]");
-          data = Stream.of(data).distinct().toArray(String[]::new);
-          Pattern p = Pattern.compile("\\w+-\\d+");
-          for (String link : data) {
-            if(link.startsWith("http://ra") || link.startsWith("http://rg")) {
-              if(!p.matcher(link).find()) {
-                link = link + "/" + linkCommentDTO.code_video;
-              }
-              if(isNotDie(link)) {
-                System.out.println(link);
-              }
+//          String[] data = s.split("\\[|\\]");
+//          data = Stream.of(data).distinct().toArray(String[]::new);
+//          Pattern p = Pattern.compile("\\w+-\\d+");
+//          for (String link : data) {
+//            if(link.startsWith("http://ra") || link.startsWith("http://rg")) {
+//              if(!p.matcher(link).find()) {
+//                link = link + "/" + linkCommentDTO.code_video;
+//              }
+                System.out.println(s);
 
-            }
-          }
+//            }
+//          }
         });
       }
     });
@@ -64,7 +60,7 @@ public class RapidgatorChecker {
     try {
       Connection.Response response = Jsoup.connect(link).timeout(10000)
           .header("Referer","http://www.javlibrary.com/en")
-          .header("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36").followRedirects(false).execute();
+          .header("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36").followRedirects(true).execute();
       if(response.statusCode()==302 || response.statusCode()==404 ) {
         return false;
       }

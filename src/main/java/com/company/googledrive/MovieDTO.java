@@ -15,7 +15,7 @@ public class MovieDTO implements Comparable {
     public String image;
     public String studio;
     public Boolean isHD;
-    public Boolean uncen;
+    public Boolean uncen = false;
 
     public MovieDTO() {
     }
@@ -39,7 +39,7 @@ public class MovieDTO implements Comparable {
     @Override
     public String toString() {
         return "MovieDTO{" +
-                "name='" + name + '\'' +
+                "name='" + name + '\'' + ", Description='" + description + '\'' +
                 ", googleId='" + googleId + '\'' +
                 '}';
     }

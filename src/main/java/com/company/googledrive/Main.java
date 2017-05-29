@@ -40,7 +40,7 @@ public class Main {
     public static void main(String[] args) {
 //        System.out.println(JsonConverter.getData().size());
         List<MovieDTO> movieDTOs = null;
-        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVRVUtRDY4cFFfdnM");
+        movieDTOs = getDataFromGoogleDrive("0B6iOGhAfgoxVTU9pdzZJNXNlazQ");
 //        movieDTOs.stream().forEach(movieDTO -> System.out.println(movieDTO.image));
 //        List<MovieDTO> movieDTOS_2 = getDataFromGoogleDrive("0Bw7bYe57hsqOcm52cGNwR1hFY2M");
 //        List<MovieDTO> stack_list = movieDTOs.stream().filter(movieDTO -> !movieDTOS_2.contains(movieDTO)).collect(Collectors.toList());//        ApplicationContext ctx = null;
@@ -120,7 +120,7 @@ public class Main {
 
     private static void insertMovieFromListType(List<MovieDTO> movieDTOs,MovieService movieService) throws InterruptedException {
 //        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\study\\javservice_metadata\\hitodzuma-library-20170321.json");
-        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("C:\\link.json");
+        List<LinkCommentDTO>  linkCommentDTOs = JsonConverter.getLinkData("D:\\linkJUY.json");
         BlockingQueue<String> movieLinks = new LinkedBlockingQueue<>();
         List<MovieDTO> moviesHaveDetailList = new ArrayList<>();
         Queue<String> pageLinks = new ArrayDeque<>();
