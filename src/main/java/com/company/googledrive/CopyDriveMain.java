@@ -132,7 +132,7 @@ public class CopyDriveMain {
       permission.setType("anyone");
       permission.setRole("reader");
       List<String> ids = new ArrayList<>();
-          getFileList(ids, service, "0B6iOGhAfgoxVYjRkYmpmT2FpUlU", "");
+      getFileList(ids, service, "0B6iOGhAfgoxVYjRkYmpmT2FpUlU", "");
       for (int i = 1; i < 213; i++) {
         flag = i;
         Iterable<Movie> movies = movieService.getMovies(i, 10, null);

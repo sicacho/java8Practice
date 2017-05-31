@@ -20,18 +20,21 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class GetAllLinkLibrary {
   public static void main(String[] args) {
-
+//    System.getProperties().put("http.proxyHost", "35.162.153.131");
+//    System.getProperties().put("http.proxyPort", "3128");
+//    System.setProperty("java.net.useSystemProxies", "true");
     ApplicationContext ctx = null;
     ctx = new SpringApplicationBuilder().sources(Main.class).web(false).run(args);
     MovieService movieService = (MovieService) ctx.getBean("movieService");
     BlockingQueue<LibraryLinkDTO> codes = new LinkedBlockingDeque<>();
     List<LibraryLinkDTO> libraryMovieLinks = new ArrayList<>();
-    for (int i = 1; i <= 5; i++) {
+    for (int i = 1; i <= 138; i++) {
       Iterable<Movie> movies = movieService.getMovies(i,null,null);
       movies.forEach(movie -> codes.add(new LibraryLinkDTO(movie.getId(),null,movie.getCode())));
     }
     final int movieCounter = codes.size();
     System.out.println("Total Movie : " + movieCounter);
+
     Runnable runnable = new Runnable() {
       @Override
       public void run() {
@@ -47,6 +50,7 @@ public class GetAllLinkLibrary {
               System.out.println("Success add movie : " + movie.code + "-" + link);
             }
           } catch (Exception e) {
+            System.out.println(e.getMessage());
             try {
               codes.put(movie);
             } catch (InterruptedException e1) {
@@ -77,7 +81,7 @@ public class GetAllLinkLibrary {
     }
     ObjectMapper mapper = new ObjectMapper();
     try {
-      mapper.writerWithDefaultPrettyPrinter().writeValue(new File("C:\\libraryMapping.json"), libraryMovieLinks);
+      mapper.writerWithDefaultPrettyPrinter().writeValue(new File("libraryMapping.json"), libraryMovieLinks);
     } catch (IOException e) {
       e.printStackTrace();
     }

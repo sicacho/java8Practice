@@ -145,7 +145,7 @@ public class DriveQuickstart {
 
 //    updateResolutions(service,args);
       FileList result = getFileList(service,"0Bw7bYe57hsqORk1RODZIVllQT2M");
-      backupLink(args, result);
+//      backupLink(args, result);
 
   }
 

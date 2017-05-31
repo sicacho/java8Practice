@@ -130,6 +130,10 @@
         <artifactId>okhttp</artifactId>
         <version>3.4.2</version>
     </dependency>
-
+    <dependency>
+        <groupId>com.optimaize.languagedetector</groupId>
+        <artifactId>language-detector</artifactId>
+        <version>0.6</version>
+    </dependency>
 </dependencies>
 </project>
